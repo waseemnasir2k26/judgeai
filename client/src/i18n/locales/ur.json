@@ -1,0 +1,166 @@
+{
+  "common": {
+    "loading": "لوڈ ہو رہا ہے...",
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ",
+    "delete": "حذف کریں",
+    "edit": "ترمیم",
+    "create": "بنائیں",
+    "submit": "جمع کرائیں",
+    "confirm": "تصدیق",
+    "back": "واپس",
+    "next": "اگلا",
+    "previous": "پچھلا",
+    "search": "تلاش",
+    "filter": "فلٹر",
+    "noResults": "کوئی نتائج نہیں ملے",
+    "error": "ایک خرابی پیش آگئی",
+    "success": "کامیابی",
+    "required": "ضروری"
+  },
+  "auth": {
+    "login": "لاگ ان",
+    "logout": "لاگ آؤٹ",
+    "register": "رجسٹر",
+    "email": "ای میل",
+    "password": "پاس ورڈ",
+    "confirmPassword": "پاس ورڈ کی تصدیق",
+    "firstName": "پہلا نام",
+    "lastName": "آخری نام",
+    "forgotPassword": "پاس ورڈ بھول گئے؟",
+    "resetPassword": "پاس ورڈ دوبارہ ترتیب دیں",
+    "verifyEmail": "ای میل کی تصدیق",
+    "verificationCode": "تصدیقی کوڈ",
+    "resendCode": "کوڈ دوبارہ بھیجیں",
+    "pendingApproval": "منظوری زیر التوا",
+    "pendingMessage": "آپ کا اکاؤنٹ منتظم کی منظوری کا انتظار کر رہا ہے۔ منظوری کے بعد آپ کو ای میل موصول ہوگی۔",
+    "loginTitle": "خوش آمدید",
+    "loginSubtitle": "اپنے اکاؤنٹ تک رسائی کے لیے سائن ان کریں",
+    "registerTitle": "اکاؤنٹ بنائیں",
+    "registerSubtitle": "ہمارے قانونی تجزیہ پلیٹ فارم میں شامل ہوں",
+    "gmailOnly": "بیٹا کے دوران صرف Gmail پتے قبول کیے جاتے ہیں",
+    "passwordRequirements": "پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے جس میں بڑے، چھوٹے حروف اور نمبر شامل ہوں"
+  },
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "analyses": "میرے تجزیے",
+    "newAnalysis": "نیا تجزیہ",
+    "admin": "ایڈمن پینل",
+    "settings": "ترتیبات",
+    "profile": "پروفائل"
+  },
+  "dashboard": {
+    "title": "ڈیش بورڈ",
+    "welcome": "خوش آمدید",
+    "recentAnalyses": "حالیہ تجزیے",
+    "quickActions": "فوری اقدامات",
+    "stats": {
+      "totalAnalyses": "کل تجزیے",
+      "completed": "مکمل",
+      "inProgress": "جاری ہے",
+      "pending": "زیر التوا"
+    }
+  },
+  "analysis": {
+    "new": "نیا تجزیہ",
+    "title": "تجزیہ کا عنوان",
+    "uploadDocuments": "دستاویزات اپ لوڈ کریں",
+    "dropzone": "PDF فائلیں یہاں گھسیٹیں اور چھوڑیں، یا براؤز کرنے کے لیے کلک کریں",
+    "maxFiles": "زیادہ سے زیادہ {{max}} فائلیں، {{size}}MB ہر ایک",
+    "configuration": "ترتیب",
+    "tone": "جواب کا لہجہ",
+    "tones": {
+      "aggressive": "جارحانہ",
+      "professional": "پیشہ ورانہ",
+      "simple": "سادہ"
+    },
+    "depth": "تجزیہ کی گہرائی",
+    "depths": {
+      "quick": "فوری جائزہ",
+      "standard": "معیاری تجزیہ",
+      "comprehensive": "جامع جائزہ"
+    },
+    "caseType": "کیس کی قسم",
+    "caseTypes": {
+      "civil": "دیوانی",
+      "criminal": "فوجداری",
+      "family": "خاندانی",
+      "commercial": "تجارتی",
+      "administrative": "انتظامی",
+      "constitutional": "آئینی",
+      "other": "دیگر"
+    },
+    "focusAreas": "توجہ کے شعبے",
+    "review": "جائزہ اور شروع",
+    "startAnalysis": "تجزیہ شروع کریں",
+    "processing": "پروسیسنگ...",
+    "results": "نتائج",
+    "tabs": {
+      "summary": "ایگزیکٹو خلاصہ",
+      "documents": "دستاویزات کے خلاصے",
+      "crossAnalysis": "کراس تجزیہ",
+      "legalFramework": "قانونی فریم ورک",
+      "judgment": "فیصلے کا تجزیہ",
+      "timeline": "ٹائم لائن",
+      "recommendations": "سفارشات"
+    },
+    "download": "رپورٹ ڈاؤن لوڈ کریں",
+    "downloadPdf": "PDF ڈاؤن لوڈ",
+    "downloadDocx": "DOCX ڈاؤن لوڈ"
+  },
+  "admin": {
+    "dashboard": "ایڈمن ڈیش بورڈ",
+    "users": "صارف کا انتظام",
+    "aiConfig": "AI ترتیب",
+    "feedback": "رائے",
+    "auditLogs": "آڈٹ لاگز",
+    "settings": "سسٹم کی ترتیبات",
+    "stats": {
+      "totalUsers": "کل صارفین",
+      "pendingApprovals": "زیر التوا منظوریاں",
+      "totalAnalyses": "کل تجزیے",
+      "avgRating": "اوسط درجہ بندی"
+    },
+    "userActions": {
+      "approve": "منظور",
+      "reject": "مسترد",
+      "suspend": "معطل",
+      "reactivate": "دوبارہ فعال",
+      "delete": "حذف"
+    },
+    "aiSettings": {
+      "apiKey": "OpenAI API کلید",
+      "model": "ماڈل",
+      "temperature": "درجہ حرارت",
+      "maxTokens": "زیادہ سے زیادہ ٹوکنز",
+      "masterPrompt": "ماسٹر سسٹم پرامپٹ",
+      "tonePrompts": "لہجے کے مخصوص پرامپٹس",
+      "testConfig": "ترتیب کی جانچ"
+    }
+  },
+  "feedback": {
+    "title": "رائے",
+    "rating": "مجموعی درجہ بندی",
+    "nps": "آپ کتنے امکان سے سفارش کریں گے؟",
+    "categories": {
+      "accuracy": "تجزیہ کی درستگی",
+      "speed": "پروسیسنگ کی رفتار",
+      "usability": "استعمال میں آسانی",
+      "quality": "رپورٹ کا معیار"
+    },
+    "comments": "اضافی تبصرے",
+    "submit": "رائے جمع کرائیں",
+    "thankYou": "آپ کی رائے کا شکریہ!"
+  },
+  "status": {
+    "pending": "زیر التوا",
+    "processing": "پروسیسنگ",
+    "completed": "مکمل",
+    "failed": "ناکام",
+    "approved": "منظور شدہ",
+    "rejected": "مسترد",
+    "suspended": "معطل",
+    "unverified": "غیر تصدیق شدہ",
+    "pending_approval": "منظوری زیر التوا"
+  }
+}

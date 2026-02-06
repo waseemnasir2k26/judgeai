@@ -1,0 +1,166 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "submit": "Enviar",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "noResults": "No se encontraron resultados",
+    "error": "Ocurrió un error",
+    "success": "Éxito",
+    "required": "Requerido"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetPassword": "Restablecer contraseña",
+    "verifyEmail": "Verificar correo",
+    "verificationCode": "Código de verificación",
+    "resendCode": "Reenviar código",
+    "pendingApproval": "Pendiente de aprobación",
+    "pendingMessage": "Tu cuenta está esperando la aprobación del administrador. Recibirás un correo una vez aprobada.",
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Inicia sesión para acceder a tu cuenta",
+    "registerTitle": "Crear cuenta",
+    "registerSubtitle": "Únete a nuestra plataforma de análisis legal",
+    "gmailOnly": "Solo se aceptan direcciones de Gmail durante la beta",
+    "passwordRequirements": "La contraseña debe tener al menos 8 caracteres con mayúscula, minúscula y número"
+  },
+  "nav": {
+    "dashboard": "Panel de control",
+    "analyses": "Mis análisis",
+    "newAnalysis": "Nuevo análisis",
+    "admin": "Panel de administración",
+    "settings": "Configuración",
+    "profile": "Perfil"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "welcome": "Bienvenido de nuevo",
+    "recentAnalyses": "Análisis recientes",
+    "quickActions": "Acciones rápidas",
+    "stats": {
+      "totalAnalyses": "Total de análisis",
+      "completed": "Completado",
+      "inProgress": "En progreso",
+      "pending": "Pendiente"
+    }
+  },
+  "analysis": {
+    "new": "Nuevo análisis",
+    "title": "Título del análisis",
+    "uploadDocuments": "Subir documentos",
+    "dropzone": "Arrastra y suelta archivos PDF aquí, o haz clic para explorar",
+    "maxFiles": "Máximo {{max}} archivos, {{size}}MB cada uno",
+    "configuration": "Configuración",
+    "tone": "Tono de respuesta",
+    "tones": {
+      "aggressive": "Agresivo",
+      "professional": "Profesional",
+      "simple": "Simple"
+    },
+    "depth": "Profundidad de análisis",
+    "depths": {
+      "quick": "Vista rápida",
+      "standard": "Análisis estándar",
+      "comprehensive": "Revisión exhaustiva"
+    },
+    "caseType": "Tipo de caso",
+    "caseTypes": {
+      "civil": "Civil",
+      "criminal": "Penal",
+      "family": "Familiar",
+      "commercial": "Comercial",
+      "administrative": "Administrativo",
+      "constitutional": "Constitucional",
+      "other": "Otro"
+    },
+    "focusAreas": "Áreas de enfoque",
+    "review": "Revisar e iniciar",
+    "startAnalysis": "Iniciar análisis",
+    "processing": "Procesando...",
+    "results": "Resultados",
+    "tabs": {
+      "summary": "Resumen ejecutivo",
+      "documents": "Resúmenes de documentos",
+      "crossAnalysis": "Análisis cruzado",
+      "legalFramework": "Marco legal",
+      "judgment": "Análisis del fallo",
+      "timeline": "Cronología",
+      "recommendations": "Recomendaciones"
+    },
+    "download": "Descargar informe",
+    "downloadPdf": "Descargar PDF",
+    "downloadDocx": "Descargar DOCX"
+  },
+  "admin": {
+    "dashboard": "Panel de administración",
+    "users": "Gestión de usuarios",
+    "aiConfig": "Configuración de IA",
+    "feedback": "Comentarios",
+    "auditLogs": "Registros de auditoría",
+    "settings": "Configuración del sistema",
+    "stats": {
+      "totalUsers": "Total de usuarios",
+      "pendingApprovals": "Pendientes de aprobación",
+      "totalAnalyses": "Total de análisis",
+      "avgRating": "Calificación promedio"
+    },
+    "userActions": {
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "suspend": "Suspender",
+      "reactivate": "Reactivar",
+      "delete": "Eliminar"
+    },
+    "aiSettings": {
+      "apiKey": "Clave API de OpenAI",
+      "model": "Modelo",
+      "temperature": "Temperatura",
+      "maxTokens": "Tokens máximos",
+      "masterPrompt": "Prompt del sistema maestro",
+      "tonePrompts": "Prompts específicos de tono",
+      "testConfig": "Probar configuración"
+    }
+  },
+  "feedback": {
+    "title": "Comentarios",
+    "rating": "Calificación general",
+    "nps": "¿Qué tan probable es que nos recomiendes?",
+    "categories": {
+      "accuracy": "Precisión del análisis",
+      "speed": "Velocidad de procesamiento",
+      "usability": "Facilidad de uso",
+      "quality": "Calidad del informe"
+    },
+    "comments": "Comentarios adicionales",
+    "submit": "Enviar comentarios",
+    "thankYou": "¡Gracias por tus comentarios!"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "processing": "Procesando",
+    "completed": "Completado",
+    "failed": "Fallido",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "suspended": "Suspendido",
+    "unverified": "No verificado",
+    "pending_approval": "Pendiente de aprobación"
+  }
+}

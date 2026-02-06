@@ -1,0 +1,166 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "submit": "إرسال",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "search": "بحث",
+    "filter": "تصفية",
+    "noResults": "لا توجد نتائج",
+    "error": "حدث خطأ",
+    "success": "نجاح",
+    "required": "مطلوب"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "verifyEmail": "تأكيد البريد الإلكتروني",
+    "verificationCode": "رمز التحقق",
+    "resendCode": "إعادة إرسال الرمز",
+    "pendingApproval": "في انتظار الموافقة",
+    "pendingMessage": "حسابك في انتظار موافقة المسؤول. ستتلقى بريدًا إلكترونيًا بمجرد الموافقة.",
+    "loginTitle": "مرحبًا بعودتك",
+    "loginSubtitle": "سجل الدخول للوصول إلى حسابك",
+    "registerTitle": "إنشاء حساب",
+    "registerSubtitle": "انضم إلى منصة التحليل القانوني",
+    "gmailOnly": "يُقبل فقط عناوين Gmail خلال الفترة التجريبية",
+    "passwordRequirements": "يجب أن تكون كلمة المرور 8 أحرف على الأقل مع حرف كبير وصغير ورقم"
+  },
+  "nav": {
+    "dashboard": "لوحة القيادة",
+    "analyses": "تحليلاتي",
+    "newAnalysis": "تحليل جديد",
+    "admin": "لوحة الإدارة",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي"
+  },
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "welcome": "مرحبًا بعودتك",
+    "recentAnalyses": "التحليلات الأخيرة",
+    "quickActions": "إجراءات سريعة",
+    "stats": {
+      "totalAnalyses": "إجمالي التحليلات",
+      "completed": "مكتمل",
+      "inProgress": "قيد التنفيذ",
+      "pending": "معلق"
+    }
+  },
+  "analysis": {
+    "new": "تحليل جديد",
+    "title": "عنوان التحليل",
+    "uploadDocuments": "رفع المستندات",
+    "dropzone": "اسحب وأفلت ملفات PDF هنا، أو انقر للتصفح",
+    "maxFiles": "الحد الأقصى {{max}} ملفات، {{size}} ميجابايت لكل ملف",
+    "configuration": "الإعدادات",
+    "tone": "نبرة الرد",
+    "tones": {
+      "aggressive": "صارم",
+      "professional": "مهني",
+      "simple": "بسيط"
+    },
+    "depth": "عمق التحليل",
+    "depths": {
+      "quick": "نظرة سريعة",
+      "standard": "تحليل قياسي",
+      "comprehensive": "مراجعة شاملة"
+    },
+    "caseType": "نوع القضية",
+    "caseTypes": {
+      "civil": "مدني",
+      "criminal": "جنائي",
+      "family": "أسري",
+      "commercial": "تجاري",
+      "administrative": "إداري",
+      "constitutional": "دستوري",
+      "other": "أخرى"
+    },
+    "focusAreas": "مجالات التركيز",
+    "review": "مراجعة وبدء",
+    "startAnalysis": "بدء التحليل",
+    "processing": "جاري المعالجة...",
+    "results": "النتائج",
+    "tabs": {
+      "summary": "الملخص التنفيذي",
+      "documents": "ملخصات المستندات",
+      "crossAnalysis": "التحليل المتقاطع",
+      "legalFramework": "الإطار القانوني",
+      "judgment": "تحليل الحكم",
+      "timeline": "الجدول الزمني",
+      "recommendations": "التوصيات"
+    },
+    "download": "تحميل التقرير",
+    "downloadPdf": "تحميل PDF",
+    "downloadDocx": "تحميل DOCX"
+  },
+  "admin": {
+    "dashboard": "لوحة إدارة المسؤول",
+    "users": "إدارة المستخدمين",
+    "aiConfig": "إعدادات الذكاء الاصطناعي",
+    "feedback": "التعليقات",
+    "auditLogs": "سجلات المراجعة",
+    "settings": "إعدادات النظام",
+    "stats": {
+      "totalUsers": "إجمالي المستخدمين",
+      "pendingApprovals": "في انتظار الموافقة",
+      "totalAnalyses": "إجمالي التحليلات",
+      "avgRating": "متوسط التقييم"
+    },
+    "userActions": {
+      "approve": "موافقة",
+      "reject": "رفض",
+      "suspend": "تعليق",
+      "reactivate": "إعادة تفعيل",
+      "delete": "حذف"
+    },
+    "aiSettings": {
+      "apiKey": "مفتاح OpenAI API",
+      "model": "النموذج",
+      "temperature": "درجة الحرارة",
+      "maxTokens": "الحد الأقصى للرموز",
+      "masterPrompt": "التوجيه الرئيسي للنظام",
+      "tonePrompts": "توجيهات النبرة المحددة",
+      "testConfig": "اختبار الإعدادات"
+    }
+  },
+  "feedback": {
+    "title": "التعليقات",
+    "rating": "التقييم العام",
+    "nps": "ما مدى احتمالية توصيتك؟",
+    "categories": {
+      "accuracy": "دقة التحليل",
+      "speed": "سرعة المعالجة",
+      "usability": "سهولة الاستخدام",
+      "quality": "جودة التقرير"
+    },
+    "comments": "تعليقات إضافية",
+    "submit": "إرسال التعليق",
+    "thankYou": "شكرًا لتعليقك!"
+  },
+  "status": {
+    "pending": "معلق",
+    "processing": "قيد المعالجة",
+    "completed": "مكتمل",
+    "failed": "فشل",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "suspended": "معلق",
+    "unverified": "غير موثق",
+    "pending_approval": "في انتظار الموافقة"
+  }
+}

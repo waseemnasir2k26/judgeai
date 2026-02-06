@@ -1,0 +1,166 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "submit": "Soumettre",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "noResults": "Aucun résultat trouvé",
+    "error": "Une erreur s'est produite",
+    "success": "Succès",
+    "required": "Requis"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "verifyEmail": "Vérifier l'e-mail",
+    "verificationCode": "Code de vérification",
+    "resendCode": "Renvoyer le code",
+    "pendingApproval": "En attente d'approbation",
+    "pendingMessage": "Votre compte est en attente d'approbation par l'administrateur. Vous recevrez un e-mail une fois approuvé.",
+    "loginTitle": "Bienvenue",
+    "loginSubtitle": "Connectez-vous pour accéder à votre compte",
+    "registerTitle": "Créer un compte",
+    "registerSubtitle": "Rejoignez notre plateforme d'analyse juridique",
+    "gmailOnly": "Seules les adresses Gmail sont acceptées pendant la bêta",
+    "passwordRequirements": "Le mot de passe doit contenir au moins 8 caractères avec majuscule, minuscule et chiffre"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "analyses": "Mes analyses",
+    "newAnalysis": "Nouvelle analyse",
+    "admin": "Panneau d'administration",
+    "settings": "Paramètres",
+    "profile": "Profil"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue",
+    "recentAnalyses": "Analyses récentes",
+    "quickActions": "Actions rapides",
+    "stats": {
+      "totalAnalyses": "Total des analyses",
+      "completed": "Terminé",
+      "inProgress": "En cours",
+      "pending": "En attente"
+    }
+  },
+  "analysis": {
+    "new": "Nouvelle analyse",
+    "title": "Titre de l'analyse",
+    "uploadDocuments": "Télécharger des documents",
+    "dropzone": "Glissez-déposez des fichiers PDF ici, ou cliquez pour parcourir",
+    "maxFiles": "Maximum {{max}} fichiers, {{size}} Mo chacun",
+    "configuration": "Configuration",
+    "tone": "Ton de réponse",
+    "tones": {
+      "aggressive": "Agressif",
+      "professional": "Professionnel",
+      "simple": "Simple"
+    },
+    "depth": "Profondeur d'analyse",
+    "depths": {
+      "quick": "Aperçu rapide",
+      "standard": "Analyse standard",
+      "comprehensive": "Examen complet"
+    },
+    "caseType": "Type d'affaire",
+    "caseTypes": {
+      "civil": "Civil",
+      "criminal": "Pénal",
+      "family": "Familial",
+      "commercial": "Commercial",
+      "administrative": "Administratif",
+      "constitutional": "Constitutionnel",
+      "other": "Autre"
+    },
+    "focusAreas": "Domaines de focus",
+    "review": "Réviser et démarrer",
+    "startAnalysis": "Démarrer l'analyse",
+    "processing": "Traitement...",
+    "results": "Résultats",
+    "tabs": {
+      "summary": "Résumé exécutif",
+      "documents": "Résumés des documents",
+      "crossAnalysis": "Analyse croisée",
+      "legalFramework": "Cadre juridique",
+      "judgment": "Analyse du jugement",
+      "timeline": "Chronologie",
+      "recommendations": "Recommandations"
+    },
+    "download": "Télécharger le rapport",
+    "downloadPdf": "Télécharger PDF",
+    "downloadDocx": "Télécharger DOCX"
+  },
+  "admin": {
+    "dashboard": "Tableau de bord admin",
+    "users": "Gestion des utilisateurs",
+    "aiConfig": "Configuration IA",
+    "feedback": "Commentaires",
+    "auditLogs": "Journaux d'audit",
+    "settings": "Paramètres système",
+    "stats": {
+      "totalUsers": "Total utilisateurs",
+      "pendingApprovals": "En attente d'approbation",
+      "totalAnalyses": "Total analyses",
+      "avgRating": "Note moyenne"
+    },
+    "userActions": {
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "suspend": "Suspendre",
+      "reactivate": "Réactiver",
+      "delete": "Supprimer"
+    },
+    "aiSettings": {
+      "apiKey": "Clé API OpenAI",
+      "model": "Modèle",
+      "temperature": "Température",
+      "maxTokens": "Tokens maximum",
+      "masterPrompt": "Prompt système principal",
+      "tonePrompts": "Prompts spécifiques au ton",
+      "testConfig": "Tester la configuration"
+    }
+  },
+  "feedback": {
+    "title": "Commentaires",
+    "rating": "Note globale",
+    "nps": "Quelle est la probabilité que vous recommandiez ?",
+    "categories": {
+      "accuracy": "Précision de l'analyse",
+      "speed": "Vitesse de traitement",
+      "usability": "Facilité d'utilisation",
+      "quality": "Qualité du rapport"
+    },
+    "comments": "Commentaires supplémentaires",
+    "submit": "Soumettre",
+    "thankYou": "Merci pour vos commentaires !"
+  },
+  "status": {
+    "pending": "En attente",
+    "processing": "Traitement",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "approved": "Approuvé",
+    "rejected": "Rejeté",
+    "suspended": "Suspendu",
+    "unverified": "Non vérifié",
+    "pending_approval": "En attente d'approbation"
+  }
+}

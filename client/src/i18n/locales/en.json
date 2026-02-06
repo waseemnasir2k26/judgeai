@@ -1,0 +1,166 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "noResults": "No results found",
+    "error": "An error occurred",
+    "success": "Success",
+    "required": "Required"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "verifyEmail": "Verify Email",
+    "verificationCode": "Verification Code",
+    "resendCode": "Resend Code",
+    "pendingApproval": "Pending Approval",
+    "pendingMessage": "Your account is awaiting admin approval. You will receive an email once approved.",
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Sign in to access your account",
+    "registerTitle": "Create Account",
+    "registerSubtitle": "Join our legal analysis platform",
+    "gmailOnly": "Only Gmail addresses are accepted during beta",
+    "passwordRequirements": "Password must be at least 8 characters with uppercase, lowercase, and number"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "analyses": "My Analyses",
+    "newAnalysis": "New Analysis",
+    "admin": "Admin Panel",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "recentAnalyses": "Recent Analyses",
+    "quickActions": "Quick Actions",
+    "stats": {
+      "totalAnalyses": "Total Analyses",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "pending": "Pending"
+    }
+  },
+  "analysis": {
+    "new": "New Analysis",
+    "title": "Analysis Title",
+    "uploadDocuments": "Upload Documents",
+    "dropzone": "Drag and drop PDF files here, or click to browse",
+    "maxFiles": "Maximum {{max}} files, {{size}}MB each",
+    "configuration": "Configuration",
+    "tone": "Response Tone",
+    "tones": {
+      "aggressive": "Aggressive",
+      "professional": "Professional",
+      "simple": "Simple"
+    },
+    "depth": "Analysis Depth",
+    "depths": {
+      "quick": "Quick Overview",
+      "standard": "Standard Analysis",
+      "comprehensive": "Comprehensive Review"
+    },
+    "caseType": "Case Type",
+    "caseTypes": {
+      "civil": "Civil",
+      "criminal": "Criminal",
+      "family": "Family",
+      "commercial": "Commercial",
+      "administrative": "Administrative",
+      "constitutional": "Constitutional",
+      "other": "Other"
+    },
+    "focusAreas": "Focus Areas",
+    "review": "Review & Start",
+    "startAnalysis": "Start Analysis",
+    "processing": "Processing...",
+    "results": "Results",
+    "tabs": {
+      "summary": "Executive Summary",
+      "documents": "Document Summaries",
+      "crossAnalysis": "Cross-Analysis",
+      "legalFramework": "Legal Framework",
+      "judgment": "Judgment Analysis",
+      "timeline": "Timeline",
+      "recommendations": "Recommendations"
+    },
+    "download": "Download Report",
+    "downloadPdf": "Download PDF",
+    "downloadDocx": "Download DOCX"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "users": "User Management",
+    "aiConfig": "AI Configuration",
+    "feedback": "Feedback",
+    "auditLogs": "Audit Logs",
+    "settings": "System Settings",
+    "stats": {
+      "totalUsers": "Total Users",
+      "pendingApprovals": "Pending Approvals",
+      "totalAnalyses": "Total Analyses",
+      "avgRating": "Average Rating"
+    },
+    "userActions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "delete": "Delete"
+    },
+    "aiSettings": {
+      "apiKey": "OpenAI API Key",
+      "model": "Model",
+      "temperature": "Temperature",
+      "maxTokens": "Max Tokens",
+      "masterPrompt": "Master System Prompt",
+      "tonePrompts": "Tone-Specific Prompts",
+      "testConfig": "Test Configuration"
+    }
+  },
+  "feedback": {
+    "title": "Feedback",
+    "rating": "Overall Rating",
+    "nps": "How likely are you to recommend?",
+    "categories": {
+      "accuracy": "Analysis Accuracy",
+      "speed": "Processing Speed",
+      "usability": "Ease of Use",
+      "quality": "Report Quality"
+    },
+    "comments": "Additional Comments",
+    "submit": "Submit Feedback",
+    "thankYou": "Thank you for your feedback!"
+  },
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "suspended": "Suspended",
+    "unverified": "Unverified",
+    "pending_approval": "Pending Approval"
+  }
+}
