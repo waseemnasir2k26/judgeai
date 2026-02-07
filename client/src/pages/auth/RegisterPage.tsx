@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
-import { Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Clock, Sparkles } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
@@ -19,13 +19,13 @@ export const RegisterPage: React.FC = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const passwordRequirements = [
     { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
     { label: 'One uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
     { label: 'One lowercase letter', test: (p: string) => /[a-z]/.test(p) },
     { label: 'One number', test: (p: string) => /\d/.test(p) },
-    { label: 'One special character', test: (p: string) => /[@$!%*?&]/.test(p) },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,12 +35,6 @@ export const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    // Validate Gmail
-    if (!formData.email.endsWith('@gmail.com')) {
-      setError('Only Gmail addresses are allowed during beta');
-      return;
-    }
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
@@ -67,7 +61,7 @@ export const RegisterPage: React.FC = () => {
     });
 
     if (result.success) {
-      navigate('/verify-email', { state: { email: formData.email } });
+      setIsSuccess(true);
     } else {
       setError(result.message || 'Registration failed');
     }
@@ -75,9 +69,40 @@ export const RegisterPage: React.FC = () => {
     setIsLoading(false);
   };
 
+  // Success state - show pending approval message
+  if (isSuccess) {
+    return (
+      <Card className="animate-fade-in text-center">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 flex items-center justify-center mx-auto mb-6">
+          <Clock className="w-10 h-10 text-primary-600" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+          Registration Successful!
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+          Your account has been created and is <span className="font-semibold text-yellow-600">pending admin approval</span>.
+          You'll be able to log in once your account is approved.
+        </p>
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6">
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            We'll notify you via email once your account is approved. This usually happens within 24 hours.
+          </p>
+        </div>
+        <Link to="/login">
+          <Button variant="outline" className="w-full">
+            Back to Login
+          </Button>
+        </Link>
+      </Card>
+    );
+  }
+
   return (
     <Card className="animate-fade-in">
       <div className="text-center mb-8">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <Sparkles className="w-8 h-8 text-white" />
+        </div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Create Account
         </h1>
@@ -94,7 +119,7 @@ export const RegisterPage: React.FC = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input
             label="First Name"
             name="firstName"
@@ -120,9 +145,8 @@ export const RegisterPage: React.FC = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="you@gmail.com"
+          placeholder="you@example.com"
           leftIcon={<Mail className="w-5 h-5" />}
-          helperText="Only Gmail addresses are allowed during beta"
           required
         />
 
@@ -138,19 +162,19 @@ export const RegisterPage: React.FC = () => {
         />
 
         {/* Password Requirements */}
-        <div className="space-y-2">
+        <div className="grid grid-cols-2 gap-2">
           {passwordRequirements.map((req) => {
             const met = req.test(formData.password);
             return (
               <div
                 key={req.label}
-                className={`flex items-center gap-2 text-sm ${
+                className={`flex items-center gap-2 text-xs ${
                   met
                     ? 'text-green-600 dark:text-green-400'
-                    : 'text-gray-500 dark:text-gray-400'
+                    : 'text-gray-400 dark:text-gray-500'
                 }`}
               >
-                <CheckCircle className={`w-4 h-4 ${met ? '' : 'opacity-30'}`} />
+                <CheckCircle className={`w-3.5 h-3.5 ${met ? '' : 'opacity-30'}`} />
                 {req.label}
               </div>
             );
@@ -173,6 +197,10 @@ export const RegisterPage: React.FC = () => {
           }
           required
         />
+
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-sm text-yellow-700 dark:text-yellow-300">
+          <strong>Note:</strong> New accounts require admin approval before you can log in.
+        </div>
 
         <Button
           type="submit"

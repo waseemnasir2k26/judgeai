@@ -103,7 +103,7 @@ export const authApi = {
     Promise.resolve({ data: { success: true } }),
 };
 
-// Analysis API
+// Analysis API - wraps responses to match expected format
 export const analysisApi = {
   create: (formData: FormData) =>
     api.post('/analysis/create', formData, {
@@ -112,13 +112,28 @@ export const analysisApi = {
     }),
 
   get: (analysisId: string) =>
-    api.get(`/analysis/${analysisId}`),
+    api.get(`/analysis/${analysisId}`).then(res => ({
+      data: {
+        data: res.data
+      }
+    })),
 
   list: (params?: {
     page?: number;
     limit?: number;
     status?: string;
-  }) => api.get('/analysis/list', { params }),
+  }) => api.get('/analysis/list', { params }).then(res => ({
+    data: {
+      data: {
+        analyses: res.data.analyses || [],
+        pagination: {
+          page: 1,
+          pages: 1,
+          total: res.data.total || 0
+        }
+      }
+    }
+  })),
 
   delete: (analysisId: string) =>
     api.delete(`/analysis/${analysisId}`),
@@ -126,8 +141,8 @@ export const analysisApi = {
   // Simplified - return analysis result directly
   downloadReport: (analysisId: string) =>
     api.get(`/analysis/${analysisId}`).then(res => {
-      // Create a simple text/JSON download
-      const blob = new Blob([JSON.stringify(res.data.analysis?.result, null, 2)], { type: 'application/json' });
+      const result = res.data.analysis?.result || res.data.result || res.data;
+      const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
       return { data: blob };
     }),
 
