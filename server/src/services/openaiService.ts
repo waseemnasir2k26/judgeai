@@ -127,7 +127,7 @@ Respond in JSON format:
     try {
       const { content, tokensUsed } = await callOpenAI(
         client,
-        aiConfig.model,
+        aiConfig.aiModel,
         systemPrompt,
         prompt,
         aiConfig.temperature,
@@ -178,7 +178,7 @@ Provide a detailed cross-analysis in prose format (3-5 paragraphs).`;
 
   const { content: crossAnalysis, tokensUsed: crossTokens } = await callOpenAI(
     client,
-    aiConfig.model,
+    aiConfig.aiModel,
     systemPrompt,
     crossAnalysisPrompt,
     aiConfig.temperature,
@@ -207,7 +207,7 @@ Provide a structured legal framework analysis.`;
 
   const { content: legalFramework, tokensUsed: legalTokens } = await callOpenAI(
     client,
-    aiConfig.model,
+    aiConfig.aiModel,
     systemPrompt,
     legalFrameworkPrompt,
     aiConfig.temperature,
@@ -235,7 +235,7 @@ Provide a balanced, objective judgment analysis.`;
 
   const { content: judgmentAnalysis, tokensUsed: judgmentTokens } = await callOpenAI(
     client,
-    aiConfig.model,
+    aiConfig.aiModel,
     systemPrompt,
     judgmentPrompt,
     aiConfig.temperature,
@@ -265,7 +265,7 @@ Respond in JSON format:
   try {
     const { content: timelineContent, tokensUsed: timelineTokens } = await callOpenAI(
       client,
-      aiConfig.model,
+      aiConfig.aiModel,
       systemPrompt,
       timelinePrompt,
       aiConfig.temperature,
@@ -300,7 +300,7 @@ Provide a professional executive summary (2-4 paragraphs).`;
 
   const { content: executiveSummary, tokensUsed: summaryTokens } = await callOpenAI(
     client,
-    aiConfig.model,
+    aiConfig.aiModel,
     systemPrompt,
     summaryPrompt,
     aiConfig.temperature,
@@ -331,7 +331,7 @@ Respond in JSON format:
   try {
     const { content: recContent, tokensUsed: recTokens } = await callOpenAI(
       client,
-      aiConfig.model,
+      aiConfig.aiModel,
       systemPrompt,
       recommendationsPrompt,
       aiConfig.temperature,
@@ -360,7 +360,7 @@ Respond in JSON format:
     metadata: {
       processingTime,
       tokensUsed: totalTokensUsed,
-      model: aiConfig.model,
+      model: aiConfig.aiModel,
     },
   };
 }

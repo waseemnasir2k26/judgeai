@@ -1,4 +1,4 @@
-import pdfParse from 'pdf-parse';
+import { PDFParse } from 'pdf-parse';
 import fs from 'fs/promises';
 import { logger } from '../utils/logger.js';
 
@@ -15,20 +15,24 @@ interface PDFExtractionResult {
 export async function extractTextFromPDF(filePath: string): Promise<PDFExtractionResult> {
   try {
     const dataBuffer = await fs.readFile(filePath);
+    const pdfParser = new PDFParse({ data: dataBuffer });
 
-    const pdfData = await pdfParse(dataBuffer, {
-      max: 0, // No page limit
-    });
+    // Get text content
+    const textResult = await pdfParser.getText();
+    const text = cleanExtractedText(textResult.text);
 
-    const text = cleanExtractedText(pdfData.text);
+    // Get metadata
+    const infoResult = await pdfParser.getInfo();
+    const info = infoResult.info || {};
+    const dateNode = infoResult.getDateNode();
 
     return {
       text,
-      pageCount: pdfData.numpages,
+      pageCount: textResult.total,
       metadata: {
-        title: pdfData.info?.Title,
-        author: pdfData.info?.Author,
-        creationDate: pdfData.info?.CreationDate ? new Date(pdfData.info.CreationDate) : undefined,
+        title: info.Title,
+        author: info.Author,
+        creationDate: dateNode.CreationDate || undefined,
       },
     };
   } catch (error) {

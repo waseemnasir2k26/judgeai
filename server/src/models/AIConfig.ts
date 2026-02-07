@@ -1,12 +1,31 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { IAIConfig } from '../types/index.js';
+import mongoose, { Schema, Document, Types, Model } from 'mongoose';
 import { encrypt, decrypt } from '../utils/encryption.js';
 
-export interface IAIConfigDocument extends Omit<IAIConfig, '_id'>, Document {
+// Use a different name for the model field to avoid Document.model conflict
+export interface IAIConfigData {
+  openaiApiKey: string;
+  aiModel: string;  // Renamed from 'model' to avoid conflict
+  temperature: number;
+  maxTokens: number;
+  masterSystemPrompt: string;
+  tonePrompts: {
+    aggressive: string;
+    professional: string;
+    simple: string;
+  };
+  isActive: boolean;
+  lastUpdatedBy: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IAIConfigMethods {
   getDecryptedApiKey(): string;
 }
 
-const aiConfigSchema = new Schema<IAIConfigDocument>(
+export type IAIConfigDocument = Document<Types.ObjectId, object, IAIConfigData> & IAIConfigData & IAIConfigMethods;
+
+const aiConfigSchema = new Schema<IAIConfigData, Model<IAIConfigData>, IAIConfigMethods>(
   {
     openaiApiKey: {
       type: String,
@@ -18,17 +37,10 @@ const aiConfigSchema = new Schema<IAIConfigDocument>(
         return value;
       },
     },
-    model: {
+    aiModel: {
       type: String,
       required: true,
       default: 'gpt-4-turbo-preview',
-      enum: [
-        'gpt-4-turbo-preview',
-        'gpt-4',
-        'gpt-4-32k',
-        'gpt-3.5-turbo',
-        'gpt-3.5-turbo-16k',
-      ],
     },
     temperature: {
       type: Number,
@@ -106,4 +118,4 @@ aiConfigSchema.methods.getDecryptedApiKey = function (): string {
 // Ensure only one active config exists
 aiConfigSchema.index({ isActive: 1 });
 
-export const AIConfig = mongoose.model<IAIConfigDocument>('AIConfig', aiConfigSchema);
+export const AIConfig = mongoose.model<IAIConfigData, Model<IAIConfigData, object, IAIConfigMethods>>('AIConfig', aiConfigSchema);

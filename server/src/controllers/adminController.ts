@@ -446,7 +446,7 @@ export const getAIConfig = async (
       success: true,
       data: {
         config: {
-          model: config.model,
+          model: config.aiModel,
           temperature: config.temperature,
           maxTokens: config.maxTokens,
           masterSystemPrompt: config.masterSystemPrompt,
@@ -491,7 +491,7 @@ export const updateAIConfig = async (
     if (openaiApiKey) {
       config.openaiApiKey = openaiApiKey;
     }
-    if (model) config.model = model;
+    if (model) config.aiModel = model;
     if (temperature !== undefined) config.temperature = temperature;
     if (maxTokens) config.maxTokens = maxTokens;
     if (masterSystemPrompt) config.masterSystemPrompt = masterSystemPrompt;
@@ -519,7 +519,7 @@ export const updateAIConfig = async (
       message: 'AI configuration updated',
       data: {
         config: {
-          model: config.model,
+          model: config.aiModel,
           temperature: config.temperature,
           maxTokens: config.maxTokens,
           hasApiKey: !!config.openaiApiKey,
@@ -554,7 +554,7 @@ export const testAIConfiguration = async (
         return;
       }
       testKey = config.getDecryptedApiKey();
-      testModel = model || config.model;
+      testModel = model || config.aiModel;
     }
 
     const isValid = await testAIConfig(testKey, testModel);

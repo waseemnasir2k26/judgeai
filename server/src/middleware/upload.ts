@@ -2,6 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
+import { Request, Response, NextFunction } from 'express';
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || 'uploads';
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -50,9 +51,9 @@ export const uploadDocuments = multer({
 
 export const handleUploadError = (
   err: Error,
-  _req: Express.Request,
-  res: Express.Response,
-  next: Function
+  _req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {

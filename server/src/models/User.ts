@@ -69,10 +69,10 @@ const userSchema = new Schema<IUserDocument>(
   {
     timestamps: true,
     toJSON: {
-      transform: function (_doc, ret) {
-        delete ret.password;
-        delete ret.refreshTokens;
-        delete ret.__v;
+      transform: function (_doc, ret: Record<string, unknown>) {
+        ret.password = undefined;
+        ret.refreshTokens = undefined;
+        ret.__v = undefined;
         return ret;
       },
     },
@@ -84,18 +84,13 @@ userSchema.index({ accountState: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
 
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 userSchema.methods.comparePassword = async function (
