@@ -38,7 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const response = await authApi.getCurrentUser();
-      const user = response.data.data.user;
+      // Handle both old format (data.data.user) and new format (data.user)
+      const user = response.data.data?.user || response.data.user;
 
       setState({
         user,
@@ -67,7 +68,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       const response = await authApi.login(email, password);
-      const { user, accessToken, refreshToken } = response.data.data;
+      // Handle both old format (data.data) and new format (data directly)
+      const data = response.data.data || response.data;
+      const { user, accessToken, refreshToken } = data;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
@@ -82,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { success: true };
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed';
+      const message = error.response?.data?.message || error.response?.data?.error || 'Login failed';
       const accountState = error.response?.data?.accountState;
       return { success: false, message, accountState };
     }

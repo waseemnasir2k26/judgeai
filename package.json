@@ -1,0 +1,22 @@
+{
+  "name": "judgeai",
+  "version": "1.0.0",
+  "description": "JudgeAI - AI-Powered Legal Analysis Platform",
+  "type": "module",
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd client && npm run preview"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "formidable": "^3.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "openai": "^4.28.0",
+    "pdf-parse": "^1.1.1"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
