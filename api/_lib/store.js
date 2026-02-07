@@ -50,8 +50,8 @@ export async function createUser({ firstName, lastName, email, password }) {
     email: email.toLowerCase(),
     password: hashedPassword,
     role: 'user',
-    accountState: 'approved', // Auto-approve for testing
-    isEmailVerified: true,    // Skip verification for testing
+    accountState: 'pending',  // Requires admin approval
+    isEmailVerified: true,    // Skip email verification for now
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     lastLogin: null,

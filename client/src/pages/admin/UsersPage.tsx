@@ -136,7 +136,7 @@ export const UsersPage: React.FC = () => {
             >
               <option value="">All Status</option>
               <option value="unverified">Unverified</option>
-              <option value="pending_approval">Pending Approval</option>
+              <option value="pending">Pending Approval</option>
               <option value="approved">Approved</option>
               <option value="suspended">Suspended</option>
               <option value="rejected">Rejected</option>
@@ -198,7 +198,7 @@ export const UsersPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-2">
-                      {user.accountState === 'pending_approval' && (
+                      {user.accountState === 'pending' && (
                         <>
                           <Button
                             size="sm"

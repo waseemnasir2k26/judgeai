@@ -36,12 +36,26 @@ export default async function handler(req, res) {
     }
 
     // Check account state
+    if (user.accountState === 'pending') {
+      return res.status(403).json({
+        error: 'Account pending approval',
+        message: 'Your account is awaiting admin approval. Please check back later.',
+        accountState: 'pending'
+      });
+    }
+
     if (user.accountState === 'suspended') {
-      return res.status(403).json({ error: 'Account suspended' });
+      return res.status(403).json({
+        error: 'Account suspended',
+        accountState: 'suspended'
+      });
     }
 
     if (user.accountState === 'rejected') {
-      return res.status(403).json({ error: 'Account rejected' });
+      return res.status(403).json({
+        error: 'Account rejected',
+        accountState: 'rejected'
+      });
     }
 
     // Update last login

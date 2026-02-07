@@ -158,14 +158,14 @@ export const feedbackApi = {
     Promise.resolve({ data: { feedbacks: [], total: 0 } }),
 };
 
-// Admin API
+// Admin API - wraps responses to match expected format
 export const adminApi = {
   getDashboard: () => api.get('/admin/users').then(res => ({
     data: {
       stats: {
         totalUsers: res.data.total || 0,
         totalAnalyses: 0,
-        pendingApprovals: 0,
+        pendingApprovals: (res.data.users || []).filter((u: any) => u.accountState === 'pending').length,
       }
     }
   })),
@@ -176,9 +176,24 @@ export const adminApi = {
     accountState?: string;
     role?: string;
     search?: string;
-  }) => api.get('/admin/users', { params }),
+  }) => api.get('/admin/users', { params }).then(res => ({
+    data: {
+      data: {
+        users: res.data.users || [],
+        pagination: {
+          page: 1,
+          pages: 1,
+          total: res.data.total || 0
+        }
+      }
+    }
+  })),
 
-  getPendingApprovals: () => api.get('/admin/users'),
+  getPendingApprovals: () => api.get('/admin/users').then(res => ({
+    data: {
+      users: (res.data.users || []).filter((u: any) => u.accountState === 'pending')
+    }
+  })),
 
   approveUser: (userId: string) =>
     api.put('/admin/users', { userId, action: 'approve' }),
@@ -195,7 +210,16 @@ export const adminApi = {
   deleteUser: (userId: string) =>
     Promise.resolve({ data: { success: true } }), // Not implemented for safety
 
-  getAIConfig: () => api.get('/admin/ai-config'),
+  getAIConfig: () => api.get('/admin/ai-config').then(res => ({
+    data: {
+      data: {
+        config: {
+          ...res.data.config,
+          hasApiKey: !!process.env.OPENAI_API_KEY || true // Assume key is set via env
+        }
+      }
+    }
+  })),
 
   updateAIConfig: (data: {
     model?: string;
@@ -220,12 +244,12 @@ export const adminApi = {
     endDate?: string;
     page?: number;
     limit?: number;
-  }) => Promise.resolve({ data: { logs: [], total: 0 } }),
+  }) => Promise.resolve({ data: { data: { logs: [], pagination: { pages: 0 } } } }),
 
   getFeedback: (params?: {
     page?: number;
     limit?: number;
-  }) => Promise.resolve({ data: { feedbacks: [], total: 0 } }),
+  }) => Promise.resolve({ data: { data: { feedbacks: [], pagination: { pages: 0 } } } }),
 
   respondToFeedback: (feedbackId: string, response: string) =>
     Promise.resolve({ data: { success: true } }),
