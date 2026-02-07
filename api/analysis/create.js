@@ -108,6 +108,21 @@ export default async function handler(req, res) {
       result: null
     });
 
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      saveAnalysis({
+        ...analysis,
+        status: 'failed',
+        error: 'OpenAI API key not configured'
+      });
+
+      return res.status(500).json({
+        error: 'AI service not configured',
+        details: 'Please ask the administrator to add the OpenAI API key in Vercel environment variables.',
+        analysisId
+      });
+    }
+
     // Run AI analysis
     try {
       const result = await analyzeDocuments(documents, { tone, depth });
@@ -139,16 +154,26 @@ export default async function handler(req, res) {
     } catch (aiError) {
       console.error('AI analysis error:', aiError);
 
+      // More helpful error messages
+      let errorMessage = aiError.message;
+      if (errorMessage.includes('API key')) {
+        errorMessage = 'OpenAI API key is invalid or not configured properly.';
+      } else if (errorMessage.includes('rate limit')) {
+        errorMessage = 'OpenAI rate limit reached. Please try again in a few minutes.';
+      } else if (errorMessage.includes('quota')) {
+        errorMessage = 'OpenAI quota exceeded. Please check your OpenAI account billing.';
+      }
+
       // Update analysis with error
       saveAnalysis({
         ...analysis,
         status: 'failed',
-        error: aiError.message
+        error: errorMessage
       });
 
       return res.status(500).json({
         error: 'AI analysis failed',
-        details: aiError.message,
+        details: errorMessage,
         analysisId
       });
     }
