@@ -32,8 +32,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
 
-    // Check if user exists
-    const existingUser = findUserByEmail(email);
+    // Check if user exists (now async)
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({ error: 'Email already registered' });
     }

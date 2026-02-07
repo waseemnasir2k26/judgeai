@@ -48,9 +48,9 @@ export function verifyRefreshToken(token) {
   }
 }
 
-// Middleware helper: Get user from request
-// For serverless, we trust the JWT and use its data directly
-export function getUserFromRequest(req) {
+// Middleware helper: Get user from request (ASYNC version)
+// For serverless with Redis, we can optionally verify against DB
+export async function getUserFromRequestAsync(req) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -62,16 +62,16 @@ export function getUserFromRequest(req) {
     return null;
   }
 
-  // First try to find user in memory (same instance)
-  let user = findUserById(decoded.userId);
+  // Try to find user in Redis
+  let user = await findUserById(decoded.userId);
 
-  // If not found, try by email (different instance, but superadmin was seeded)
+  // If not found by ID, try by email
   if (!user && decoded.email) {
-    user = findUserByEmail(decoded.email);
+    user = await findUserByEmail(decoded.email);
   }
 
   // If still not found but token is valid, construct user from token data
-  // This handles cross-instance serverless scenarios
+  // This handles cases where user exists but Redis lookup failed
   if (!user && decoded.email) {
     user = {
       id: decoded.userId,
@@ -86,6 +86,32 @@ export function getUserFromRequest(req) {
   }
 
   return user;
+}
+
+// Synchronous version that uses JWT data directly (faster, no DB call)
+export function getUserFromRequest(req) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authHeader.substring(7);
+  const decoded = verifyAccessToken(token);
+  if (!decoded) {
+    return null;
+  }
+
+  // Return user data from JWT (no DB call needed for basic auth checks)
+  return {
+    id: decoded.userId,
+    email: decoded.email,
+    role: decoded.role || 'user',
+    firstName: decoded.firstName || 'User',
+    lastName: decoded.lastName || '',
+    accountState: decoded.accountState || 'approved',
+    isEmailVerified: decoded.isEmailVerified !== false,
+    stats: { totalAnalyses: 0, documentsProcessed: 0 }
+  };
 }
 
 // Auth middleware for API routes

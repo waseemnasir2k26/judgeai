@@ -1,5 +1,5 @@
 import { getUserFromRequest } from '../_lib/auth.js';
-import { getAllUsers, findUserById, updateUser } from '../_lib/store.js';
+import { getAllUsers, findUserById, updateUser, ensureSuperadmin } from '../_lib/store.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -12,6 +12,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Ensure superadmin exists
+    await ensureSuperadmin();
+
     // Auth check - admin only
     const user = getUserFromRequest(req);
     if (!user) {
@@ -23,7 +26,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      const users = getAllUsers();
+      const users = await getAllUsers();
       return res.status(200).json({
         users,
         total: users.length
@@ -37,7 +40,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'User ID required' });
       }
 
-      const targetUser = findUserById(userId);
+      const targetUser = await findUserById(userId);
       if (!targetUser) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -76,7 +79,7 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: 'Invalid action' });
       }
 
-      const updatedUser = updateUser(userId, updates);
+      const updatedUser = await updateUser(userId, updates);
       return res.status(200).json({
         message: 'User updated',
         user: updatedUser

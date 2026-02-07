@@ -24,8 +24,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Analysis ID required' });
     }
 
-    // Get analysis
-    const analysis = getAnalysis(id);
+    // Get analysis (now async)
+    const analysis = await getAnalysis(id);
     if (!analysis) {
       return res.status(404).json({ error: 'Analysis not found' });
     }
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      deleteAnalysis(id);
+      await deleteAnalysis(id);
       return res.status(200).json({ message: 'Analysis deleted' });
     }
 

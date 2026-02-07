@@ -16,7 +16,7 @@ function getClient() {
 
 export async function analyzeDocuments(documents, config = {}) {
   const client = getClient();
-  const aiConfig = getAIConfig();
+  const aiConfig = await getAIConfig();
 
   const tone = config.tone || 'professional';
   const depth = config.depth || 'standard';

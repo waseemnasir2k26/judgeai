@@ -1,4 +1,4 @@
-import { findUserByEmail, verifyPassword, sanitizeUser, updateUser } from '../_lib/store.js';
+import { findUserByEmail, verifyPassword, sanitizeUser, updateUser, ensureSuperadmin } from '../_lib/store.js';
 import { generateAccessToken, generateRefreshToken } from '../_lib/auth.js';
 
 export default async function handler(req, res) {
@@ -16,6 +16,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Ensure superadmin exists
+    await ensureSuperadmin();
+
     const { email, password } = req.body;
 
     // Validation
@@ -23,8 +26,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Find user
-    const user = findUserByEmail(email);
+    // Find user (now async)
+    const user = await findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -58,8 +61,8 @@ export default async function handler(req, res) {
       });
     }
 
-    // Update last login
-    updateUser(user.id, { lastLogin: new Date().toISOString() });
+    // Update last login (now async)
+    await updateUser(user.id, { lastLogin: new Date().toISOString() });
 
     // Generate tokens
     const accessToken = generateAccessToken(user);

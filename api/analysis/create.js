@@ -94,7 +94,7 @@ export default async function handler(req, res) {
 
     // Create analysis record
     const analysisId = generateId();
-    const analysis = saveAnalysis({
+    const analysis = await saveAnalysis({
       id: analysisId,
       userId: user.id,
       title,
@@ -110,7 +110,7 @@ export default async function handler(req, res) {
 
     // Check if OpenAI API key is configured
     if (!process.env.OPENAI_API_KEY) {
-      saveAnalysis({
+      await saveAnalysis({
         ...analysis,
         status: 'failed',
         error: 'OpenAI API key not configured'
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
       const result = await analyzeDocuments(documents, { tone, depth });
 
       // Update analysis with results
-      saveAnalysis({
+      await saveAnalysis({
         ...analysis,
         status: 'completed',
         result,
@@ -136,9 +136,9 @@ export default async function handler(req, res) {
       });
 
       // Update user stats
-      const currentUser = findUserById(user.id);
+      const currentUser = await findUserById(user.id);
       if (currentUser) {
-        updateUser(user.id, {
+        await updateUser(user.id, {
           stats: {
             totalAnalyses: (currentUser.stats?.totalAnalyses || 0) + 1,
             documentsProcessed: (currentUser.stats?.documentsProcessed || 0) + documents.length
@@ -165,7 +165,7 @@ export default async function handler(req, res) {
       }
 
       // Update analysis with error
-      saveAnalysis({
+      await saveAnalysis({
         ...analysis,
         status: 'failed',
         error: errorMessage

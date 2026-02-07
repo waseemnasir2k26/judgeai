@@ -22,8 +22,8 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Get user's analyses
-    const analyses = getUserAnalyses(user.id);
+    // Get user's analyses (now async)
+    const analyses = await getUserAnalyses(user.id);
 
     // Return summary (without full result to reduce payload)
     const summaries = analyses.map(a => ({
