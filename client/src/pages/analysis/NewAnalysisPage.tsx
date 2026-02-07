@@ -75,16 +75,42 @@ export const NewAnalysisPage: React.FC = () => {
     setError('');
 
     try {
+      // DEBUG: Log file details before upload
+      console.log('=== DEBUG: Starting Analysis Upload ===');
+      console.log('Files count:', files.length);
+      files.forEach((file, i) => {
+        console.log(`File ${i + 1}:`, {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          isFile: file instanceof File,
+          lastModified: file.lastModified
+        });
+      });
+
       const formData = new FormData();
       formData.append('title', title);
       formData.append('tone', tone);
       formData.append('depth', depth);
 
-      files.forEach((file) => {
-        formData.append('documents', file);
+      files.forEach((file, i) => {
+        console.log(`Appending file ${i + 1} to FormData:`, file.name);
+        formData.append('documents', file, file.name);
       });
 
+      // DEBUG: Log FormData contents
+      console.log('FormData entries:');
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+        } else {
+          console.log(`  ${key}: ${value}`);
+        }
+      }
+
+      console.log('Sending request to /api/analysis/create...');
       const response = await analysisApi.create(formData);
+      console.log('Response received:', response.data);
 
       // Handle our API response format
       const analysisId = response.data?.analysisId || response.data?.data?.analysisId || response.data?.id;
@@ -121,8 +147,20 @@ export const NewAnalysisPage: React.FC = () => {
         navigate('/analysis');
       }
     } catch (err: any) {
+      // DEBUG: Log full error details
+      console.error('=== DEBUG: Analysis Error ===');
+      console.error('Error object:', err);
+      console.error('Response status:', err.response?.status);
+      console.error('Response data:', err.response?.data);
+      console.error('Request config:', {
+        url: err.config?.url,
+        method: err.config?.method,
+        headers: err.config?.headers
+      });
+
       const errorMessage = err.response?.data?.details || err.response?.data?.error || err.response?.data?.message || 'Failed to create analysis';
-      setError(errorMessage);
+      const debugInfo = err.response?.data?.debug ? JSON.stringify(err.response.data.debug) : '';
+      setError(debugInfo ? `${errorMessage} | Debug: ${debugInfo}` : errorMessage);
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
