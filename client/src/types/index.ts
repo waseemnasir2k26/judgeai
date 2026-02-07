@@ -4,7 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   role: 'user' | 'admin' | 'superadmin';
-  accountState: 'unverified' | 'pending_approval' | 'approved' | 'suspended' | 'rejected';
+  accountState: 'unverified' | 'pending' | 'pending_approval' | 'approved' | 'suspended' | 'rejected';
   createdAt: string;
 }
 
@@ -17,33 +17,35 @@ export interface AuthState {
 }
 
 export interface Analysis {
-  _id: string;
+  id?: string;
+  _id?: string;
   userId: string;
   title: string;
   caseNumber?: string;
   documents: Document[];
-  configuration: AnalysisConfig;
+  config?: AnalysisConfig;
+  configuration?: AnalysisConfig;
   status: 'pending' | 'processing' | 'completed' | 'failed';
-  progress: number;
+  progress?: number;
   currentStep?: string;
   result?: AnalysisResult;
   error?: string;
   startedAt?: string;
   completedAt?: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 export interface Document {
   id: string;
   filename: string;
-  originalName: string;
-  mimeType: string;
-  size: number;
-  path: string;
+  originalName?: string;
+  mimeType?: string;
+  size?: number;
+  path?: string;
   extractedText?: string;
   pageCount?: number;
-  order: number;
+  order?: number;
 }
 
 export interface AnalysisConfig {
@@ -70,11 +72,11 @@ export interface AnalysisResult {
 }
 
 export interface DocumentSummary {
-  documentId: string;
+  documentId?: string;
   filename: string;
   summary: string;
   keyPoints: string[];
-  relevance: string;
+  relevance?: string;
 }
 
 export interface TimelineEvent {

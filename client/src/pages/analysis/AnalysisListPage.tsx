@@ -30,13 +30,37 @@ export const AnalysisListPage: React.FC = () => {
         page,
         limit: 10,
         status: statusFilter || undefined,
-        sortOrder: 'desc',
       });
-      setAnalyses(response.data.data.analyses);
-      setTotalPages(response.data.data.pagination.pages);
+      const apiAnalyses = response.data?.data?.analyses || [];
+
+      // Merge with cached analyses from localStorage
+      const cached = localStorage.getItem('analyses_cache');
+      const cachedAnalyses = cached ? JSON.parse(cached) : [];
+
+      // Combine and deduplicate by id
+      const allAnalyses = [...apiAnalyses];
+      cachedAnalyses.forEach((ca: Analysis) => {
+        if (!allAnalyses.find(a => (a.id || a._id) === (ca.id || ca._id))) {
+          allAnalyses.push(ca);
+        }
+      });
+
+      // Sort by createdAt descending
+      allAnalyses.sort((a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setAnalyses(allAnalyses);
+      setTotalPages(response.data?.data?.pagination?.pages || 1);
     } catch (error) {
-      console.error('Failed to fetch analyses:', error);
-      toast.error('Failed to load analyses');
+      // Fallback to cached data
+      const cached = localStorage.getItem('analyses_cache');
+      if (cached) {
+        setAnalyses(JSON.parse(cached));
+      } else {
+        console.error('Failed to fetch analyses:', error);
+        toast.error('Failed to load analyses');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -56,6 +80,16 @@ export const AnalysisListPage: React.FC = () => {
 
     try {
       await analysisApi.delete(id);
+
+      // Also remove from localStorage
+      localStorage.removeItem(`analysis_${id}`);
+      const cached = localStorage.getItem('analyses_cache');
+      if (cached) {
+        const cachedAnalyses = JSON.parse(cached);
+        const filtered = cachedAnalyses.filter((a: Analysis) => (a.id || a._id) !== id);
+        localStorage.setItem('analyses_cache', JSON.stringify(filtered));
+      }
+
       toast.success('Analysis deleted');
       fetchAnalyses();
     } catch (error) {
@@ -134,43 +168,46 @@ export const AnalysisListPage: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {filteredAnalyses.map((analysis) => (
-            <Link key={analysis._id} to={`/analysis/${analysis._id}`}>
-              <Card hover className="flex items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                    <h3 className="font-medium text-gray-900 dark:text-white truncate">
-                      {analysis.title}
-                    </h3>
-                    <StatusBadge status={analysis.status} />
+          {filteredAnalyses.map((analysis) => {
+            const analysisId = analysis.id || analysis._id;
+            return (
+              <Link key={analysisId} to={`/analysis/${analysisId}`}>
+                <Card hover className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-2">
+                      <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                      <h3 className="font-medium text-gray-900 dark:text-white truncate">
+                        {analysis.title}
+                      </h3>
+                      <StatusBadge status={analysis.status} />
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                      <span>{analysis.documents?.length || 0} documents</span>
+                      <span>•</span>
+                      <span>
+                        {new Date(analysis.createdAt).toLocaleDateString()}
+                      </span>
+                      {analysis.caseNumber && (
+                        <>
+                          <span>•</span>
+                          <span>{analysis.caseNumber}</span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                    <span>{analysis.documents.length} documents</span>
-                    <span>•</span>
-                    <span>
-                      {new Date(analysis.createdAt).toLocaleDateString()}
-                    </span>
-                    {analysis.caseNumber && (
-                      <>
-                        <span>•</span>
-                        <span>{analysis.caseNumber}</span>
-                      </>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => handleDelete(analysisId, e)}
+                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                    <ArrowRight className="w-5 h-5 text-gray-400" />
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={(e) => handleDelete(analysis._id, e)}
-                    className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                  <ArrowRight className="w-5 h-5 text-gray-400" />
-                </div>
-              </Card>
-            </Link>
-          ))}
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       )}
 

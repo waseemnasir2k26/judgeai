@@ -87,8 +87,31 @@ export const NewAnalysisPage: React.FC = () => {
 
       // Handle our API response format
       const analysisId = response.data?.analysisId || response.data?.data?.analysisId || response.data?.id;
+      const result = response.data?.result || response.data?.data?.result;
 
       if (analysisId) {
+        // Store the full analysis in localStorage for cross-instance access
+        const analysisData = {
+          id: analysisId,
+          _id: analysisId, // For compatibility
+          title,
+          status: 'completed',
+          config: { tone, depth },
+          documents: files.map((f, i) => ({ id: String(i), filename: f.name })),
+          result,
+          createdAt: new Date().toISOString(),
+          completedAt: new Date().toISOString()
+        };
+
+        // Store in localStorage for retrieval on detail page
+        localStorage.setItem(`analysis_${analysisId}`, JSON.stringify(analysisData));
+
+        // Also update the analyses list cache
+        const cachedList = localStorage.getItem('analyses_cache');
+        const analysesList = cachedList ? JSON.parse(cachedList) : [];
+        analysesList.unshift(analysisData);
+        localStorage.setItem('analyses_cache', JSON.stringify(analysesList.slice(0, 50)));
+
         toast.success('Analysis completed!');
         navigate(`/analysis/${analysisId}`);
       } else {

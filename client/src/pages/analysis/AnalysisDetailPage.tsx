@@ -47,18 +47,41 @@ export const AnalysisDetailPage: React.FC = () => {
 
   const fetchAnalysis = async () => {
     try {
+      // First check localStorage (handles serverless cross-instance issue)
+      const cached = localStorage.getItem(`analysis_${analysisId}`);
+      if (cached) {
+        const cachedAnalysis = JSON.parse(cached);
+        setAnalysis(cachedAnalysis);
+        setIsLoading(false);
+        return;
+      }
+
+      // If not in cache, try API
       const response = await analysisApi.get(analysisId!);
-      setAnalysis(response.data.data.analysis);
+      // Handle various response formats
+      const analysisData = response.data?.data?.analysis || response.data?.data || response.data?.analysis || response.data;
+
+      if (analysisData) {
+        setAnalysis(analysisData);
+        // Cache it for future access
+        localStorage.setItem(`analysis_${analysisId}`, JSON.stringify(analysisData));
+      }
 
       // Check for existing feedback
       try {
         const feedbackRes = await feedbackApi.get(analysisId!);
-        if (feedbackRes.data.data.feedback) {
-          setExistingFeedback(feedbackRes.data.data.feedback);
+        if (feedbackRes.data?.data?.feedback || feedbackRes.data?.feedback) {
+          setExistingFeedback(feedbackRes.data?.data?.feedback || feedbackRes.data?.feedback);
         }
       } catch {}
     } catch (error) {
-      toast.error('Failed to load analysis');
+      // Try localStorage one more time as fallback
+      const cached = localStorage.getItem(`analysis_${analysisId}`);
+      if (cached) {
+        setAnalysis(JSON.parse(cached));
+      } else {
+        toast.error('Failed to load analysis');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -68,35 +91,28 @@ export const AnalysisDetailPage: React.FC = () => {
     fetchAnalysis();
   }, [analysisId]);
 
-  // Poll for progress if processing
+  // Poll for progress if processing (simplified - just re-fetch the analysis)
   useEffect(() => {
     if (!analysis || analysis.status !== 'processing') return;
 
     const interval = setInterval(async () => {
       try {
-        const response = await analysisApi.getProgress(analysisId!);
-        const progress = response.data.data;
+        const response = await analysisApi.get(analysisId!);
+        const analysisData = response.data?.data?.analysis || response.data?.data || response.data?.analysis || response.data;
 
-        setAnalysis((prev) =>
-          prev
-            ? {
-                ...prev,
-                status: progress.status,
-                progress: progress.progress,
-                currentStep: progress.currentStep,
-                error: progress.error,
-              }
-            : null
-        );
+        if (analysisData) {
+          setAnalysis(analysisData);
 
-        if (progress.status === 'completed' || progress.status === 'failed') {
-          clearInterval(interval);
-          fetchAnalysis();
+          if (analysisData.status === 'completed' || analysisData.status === 'failed') {
+            clearInterval(interval);
+            // Update cache
+            localStorage.setItem(`analysis_${analysisId}`, JSON.stringify(analysisData));
+          }
         }
       } catch (error) {
         console.error('Progress poll error:', error);
       }
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [analysis?.status, analysisId]);
@@ -204,7 +220,7 @@ export const AnalysisDetailPage: React.FC = () => {
             </h1>
             <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
               {analysis.caseNumber && <span>Case: {analysis.caseNumber}</span>}
-              <span>{analysis.documents.length} documents</span>
+              <span>{analysis.documents?.length || 0} documents</span>
               <span>{new Date(analysis.createdAt).toLocaleDateString()}</span>
               <StatusBadge status={analysis.status} />
             </div>
@@ -308,57 +324,60 @@ export const AnalysisDetailPage: React.FC = () => {
             {activeTab === 'documents' && (
               <div className="space-y-4">
                 <h2 className="text-xl font-bold mb-4">Document Summaries</h2>
-                {analysis.result.documentSummaries.map((doc) => (
-                  <div
-                    key={doc.documentId}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg"
-                  >
-                    <button
-                      onClick={() =>
-                        setExpandedDocs((prev) =>
-                          prev.includes(doc.documentId)
-                            ? prev.filter((id) => id !== doc.documentId)
-                            : [...prev, doc.documentId]
-                        )
-                      }
-                      className="w-full flex items-center justify-between p-4 text-left"
+                {(analysis.result.documentSummaries || []).map((doc, index) => {
+                  const docId = doc.documentId || doc.filename || `doc-${index}`;
+                  return (
+                    <div
+                      key={docId}
+                      className="border border-gray-200 dark:border-gray-700 rounded-lg"
                     >
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-primary-600" />
-                        <span className="font-medium">{doc.filename}</span>
-                      </div>
-                      {expandedDocs.includes(doc.documentId) ? (
-                        <ChevronUp className="w-5 h-5 text-gray-400" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                      )}
-                    </button>
-                    {expandedDocs.includes(doc.documentId) && (
-                      <div className="p-4 pt-0 border-t border-gray-200 dark:border-gray-700">
-                        <p className="text-gray-700 dark:text-gray-300 mb-4">
-                          {doc.summary}
-                        </p>
-                        {doc.keyPoints.length > 0 && (
-                          <>
-                            <h4 className="font-medium mb-2">Key Points:</h4>
-                            <ul className="list-disc list-inside space-y-1">
-                              {doc.keyPoints.map((point, i) => (
-                                <li key={i} className="text-sm text-gray-600 dark:text-gray-400">
-                                  {point}
-                                </li>
-                              ))}
-                            </ul>
-                          </>
+                      <button
+                        onClick={() =>
+                          setExpandedDocs((prev) =>
+                            prev.includes(docId)
+                              ? prev.filter((id) => id !== docId)
+                              : [...prev, docId]
+                          )
+                        }
+                        className="w-full flex items-center justify-between p-4 text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-5 h-5 text-primary-600" />
+                          <span className="font-medium">{doc.filename}</span>
+                        </div>
+                        {expandedDocs.includes(docId) ? (
+                          <ChevronUp className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-gray-400" />
                         )}
-                        {doc.relevance && (
-                          <p className="mt-4 text-sm text-gray-500 italic">
-                            Relevance: {doc.relevance}
+                      </button>
+                      {expandedDocs.includes(docId) && (
+                        <div className="p-4 pt-0 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-gray-700 dark:text-gray-300 mb-4">
+                            {doc.summary}
                           </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                          {doc.keyPoints && doc.keyPoints.length > 0 && (
+                            <>
+                              <h4 className="font-medium mb-2">Key Points:</h4>
+                              <ul className="list-disc list-inside space-y-1">
+                                {doc.keyPoints.map((point, i) => (
+                                  <li key={i} className="text-sm text-gray-600 dark:text-gray-400">
+                                    {point}
+                                  </li>
+                                ))}
+                              </ul>
+                            </>
+                          )}
+                          {doc.relevance && (
+                            <p className="mt-4 text-sm text-gray-500 italic">
+                              Relevance: {doc.relevance}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -386,7 +405,7 @@ export const AnalysisDetailPage: React.FC = () => {
             {activeTab === 'timeline' && (
               <div>
                 <h2 className="text-xl font-bold mb-4">Timeline of Events</h2>
-                {analysis.result.timeline.length === 0 ? (
+                {(!analysis.result.timeline || analysis.result.timeline.length === 0) ? (
                   <p className="text-gray-500">No timeline events extracted.</p>
                 ) : (
                   <div className="space-y-4">
@@ -394,7 +413,7 @@ export const AnalysisDetailPage: React.FC = () => {
                       <div key={index} className="flex gap-4">
                         <div className="flex flex-col items-center">
                           <div className="w-3 h-3 rounded-full bg-primary-600" />
-                          {index < analysis.result!.timeline.length - 1 && (
+                          {index < (analysis.result?.timeline?.length || 0) - 1 && (
                             <div className="w-0.5 h-full bg-gray-200 dark:bg-gray-700" />
                           )}
                         </div>
@@ -426,7 +445,7 @@ export const AnalysisDetailPage: React.FC = () => {
             {activeTab === 'recommendations' && (
               <div>
                 <h2 className="text-xl font-bold mb-4">Recommendations</h2>
-                {analysis.result.recommendations.length === 0 ? (
+                {(!analysis.result.recommendations || analysis.result.recommendations.length === 0) ? (
                   <p className="text-gray-500">No recommendations generated.</p>
                 ) : (
                   <ol className="space-y-4">
