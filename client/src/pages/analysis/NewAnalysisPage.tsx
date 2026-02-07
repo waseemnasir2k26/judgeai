@@ -158,8 +158,24 @@ export const NewAnalysisPage: React.FC = () => {
         headers: err.config?.headers
       });
 
-      const errorMessage = err.response?.data?.details || err.response?.data?.error || err.response?.data?.message || 'Failed to create analysis';
-      const debugInfo = err.response?.data?.debug ? JSON.stringify(err.response.data.debug) : '';
+      // Handle different error formats
+      let errorMessage = 'Failed to create analysis';
+      const status = err.response?.status;
+      const data = err.response?.data;
+
+      if (status === 413) {
+        errorMessage = 'File too large. Please use a smaller PDF (max 10MB per file).';
+      } else if (typeof data === 'string') {
+        errorMessage = data;
+      } else if (data?.details) {
+        errorMessage = typeof data.details === 'string' ? data.details : JSON.stringify(data.details);
+      } else if (data?.error) {
+        errorMessage = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+      } else if (data?.message) {
+        errorMessage = typeof data.message === 'string' ? data.message : JSON.stringify(data.message);
+      }
+
+      const debugInfo = data?.debug ? JSON.stringify(data.debug) : '';
       setError(debugInfo ? `${errorMessage} | Debug: ${debugInfo}` : errorMessage);
       toast.error(errorMessage);
     } finally {
