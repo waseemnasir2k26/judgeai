@@ -20,10 +20,11 @@ const KEYS = {
 };
 
 // Default AI Configuration
+// gpt-4o supports up to 16384 output tokens and 128K context
 const DEFAULT_AI_CONFIG = {
-  model: process.env.OPENAI_MODEL || 'gpt-4-turbo-preview',
+  model: process.env.OPENAI_MODEL || 'gpt-4o',
   temperature: 0.3,
-  maxTokens: 8000,
+  maxTokens: 4096,
   masterSystemPrompt: `You are an expert legal analyst assistant for judges and legal professionals. Your task is to:
 
 1. DOCUMENT SUMMARY: Provide a concise summary of each uploaded document, identifying document type, key parties, core claims, relevant dates, and cited laws.
