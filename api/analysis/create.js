@@ -42,21 +42,48 @@ export default async function handler(req, res) {
       keepExtensions: true,
       maxFileSize: 10 * 1024 * 1024, // 10MB
       multiples: true,
+      allowEmptyFiles: false,
+      minFileSize: 1,
     });
 
     const [fields, files] = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
+        if (err) {
+          console.error('Form parse error:', err);
+          reject(err);
+        } else {
+          console.log('Parsed fields:', Object.keys(fields));
+          console.log('Parsed files:', Object.keys(files));
+          console.log('Files object:', JSON.stringify(files, null, 2));
+          resolve([fields, files]);
+        }
       });
     });
 
-    // Get uploaded files
-    const uploadedFiles = files.documents || files.files || [];
-    const fileList = Array.isArray(uploadedFiles) ? uploadedFiles : [uploadedFiles];
+    // Get uploaded files - formidable v3 uses array format
+    let uploadedFiles = files.documents || files.files || files.file || [];
+
+    // Handle single file case
+    if (!Array.isArray(uploadedFiles)) {
+      uploadedFiles = [uploadedFiles];
+    }
+
+    // Filter out any null/undefined entries
+    const fileList = uploadedFiles.filter(f => f && f.filepath);
+
+    console.log('File list length:', fileList.length);
+    console.log('File list:', fileList.map(f => ({ name: f.originalFilename, path: f.filepath, size: f.size })));
 
     if (fileList.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+      console.error('No files in fileList. Raw files object:', files);
+      return res.status(400).json({
+        error: 'No files uploaded',
+        debug: {
+          fileKeys: Object.keys(files),
+          hasDocuments: !!files.documents,
+          hasFiles: !!files.files
+        }
+      });
     }
 
     // Extract text from PDFs

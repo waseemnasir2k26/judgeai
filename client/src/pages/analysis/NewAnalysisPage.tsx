@@ -38,10 +38,11 @@ export const NewAnalysisPage: React.FC = () => {
   const [depth, setDepth] = useState<'basic' | 'standard' | 'comprehensive'>('standard');
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newFiles = acceptedFiles.map((file) => ({
-      ...file,
-      id: Math.random().toString(36).substr(2, 9),
-    })) as FileWithPreview[];
+    // Don't spread File objects - their properties are non-enumerable
+    // Use Object.assign to add the id property directly to the File object
+    const newFiles = acceptedFiles.map((file) =>
+      Object.assign(file, { id: Math.random().toString(36).substr(2, 9) })
+    ) as FileWithPreview[];
 
     setFiles((prev) => [...prev, ...newFiles]);
   }, []);

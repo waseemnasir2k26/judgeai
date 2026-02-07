@@ -105,11 +105,17 @@ export const authApi = {
 
 // Analysis API - wraps responses to match expected format
 export const analysisApi = {
-  create: (formData: FormData) =>
-    api.post('/analysis/create', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+  create: (formData: FormData) => {
+    // For FormData, we must NOT set Content-Type - browser sets it with boundary
+    // We need to delete the default JSON content type
+    return axios.post(`${API_URL}/analysis/create`, formData, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        // No Content-Type here - let browser set multipart/form-data with boundary
+      },
       timeout: 120000, // 2 minute timeout for AI processing
-    }),
+    });
+  },
 
   get: (analysisId: string) =>
     api.get(`/analysis/${analysisId}`).then(res => ({
