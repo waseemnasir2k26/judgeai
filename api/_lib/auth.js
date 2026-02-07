@@ -1,22 +1,30 @@
 import jwt from 'jsonwebtoken';
-import { findUserById } from './store.js';
+import { findUserById, findUserByEmail } from './store.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-key-change-in-production';
 
-// Generate access token (short-lived)
+// Generate access token (short-lived) - include ALL user info for serverless
 export function generateAccessToken(user) {
   return jwt.sign(
-    { userId: user.id, email: user.email, role: user.role },
+    {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      accountState: user.accountState,
+      isEmailVerified: user.isEmailVerified
+    },
     JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '24h' } // Longer expiry for better UX
   );
 }
 
 // Generate refresh token (long-lived)
 export function generateRefreshToken(user) {
   return jwt.sign(
-    { userId: user.id, type: 'refresh' },
+    { userId: user.id, email: user.email, type: 'refresh' },
     JWT_REFRESH_SECRET,
     { expiresIn: '7d' }
   );
@@ -41,6 +49,7 @@ export function verifyRefreshToken(token) {
 }
 
 // Middleware helper: Get user from request
+// For serverless, we trust the JWT and use its data directly
 export function getUserFromRequest(req) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -53,7 +62,29 @@ export function getUserFromRequest(req) {
     return null;
   }
 
-  const user = findUserById(decoded.userId);
+  // First try to find user in memory (same instance)
+  let user = findUserById(decoded.userId);
+
+  // If not found, try by email (different instance, but superadmin was seeded)
+  if (!user && decoded.email) {
+    user = findUserByEmail(decoded.email);
+  }
+
+  // If still not found but token is valid, construct user from token data
+  // This handles cross-instance serverless scenarios
+  if (!user && decoded.email) {
+    user = {
+      id: decoded.userId,
+      email: decoded.email,
+      role: decoded.role || 'user',
+      firstName: decoded.firstName || 'User',
+      lastName: decoded.lastName || '',
+      accountState: decoded.accountState || 'approved',
+      isEmailVerified: decoded.isEmailVerified !== false,
+      stats: { totalAnalyses: 0, documentsProcessed: 0 }
+    };
+  }
+
   return user;
 }
 

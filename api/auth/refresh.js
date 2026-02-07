@@ -1,4 +1,4 @@
-import { findUserById, sanitizeUser } from '../_lib/store.js';
+import { findUserById, findUserByEmail, sanitizeUser } from '../_lib/store.js';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../_lib/auth.js';
 
 export default async function handler(req, res) {
@@ -28,8 +28,28 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Invalid refresh token' });
     }
 
-    // Find user
-    const user = findUserById(decoded.userId);
+    // Find user - try by ID first, then by email (for serverless cross-instance)
+    let user = findUserById(decoded.userId);
+    if (!user && decoded.email) {
+      user = findUserByEmail(decoded.email);
+    }
+
+    // If still not found, the user doesn't exist in this instance
+    // For serverless, we can create a minimal user object from token
+    if (!user && decoded.email) {
+      // This handles the serverless case where user was created in another instance
+      user = {
+        id: decoded.userId,
+        email: decoded.email,
+        role: 'user',
+        firstName: 'User',
+        lastName: '',
+        accountState: 'approved',
+        isEmailVerified: true,
+        stats: { totalAnalyses: 0, documentsProcessed: 0 }
+      };
+    }
+
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
