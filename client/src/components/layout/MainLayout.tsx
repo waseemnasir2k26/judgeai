@@ -21,7 +21,7 @@ export const MainLayout: React.FC = () => {
     if (user?.accountState === 'unverified') {
       return <Navigate to="/verify-email" replace />;
     }
-    if (user?.accountState === 'pending_approval') {
+    if (user?.accountState === 'pending' || user?.accountState === 'pending_approval') {
       return <Navigate to="/pending-approval" replace />;
     }
     return <Navigate to="/login" replace />;
