@@ -29,9 +29,9 @@ export default async function handler(req, res) {
     }
 
     // Find user - try by ID first, then by email (for serverless cross-instance)
-    let user = findUserById(decoded.userId);
+    let user = await findUserById(decoded.userId);
     if (!user && decoded.email) {
-      user = findUserByEmail(decoded.email);
+      user = await findUserByEmail(decoded.email);
     }
 
     // If still not found, the user doesn't exist in this instance
