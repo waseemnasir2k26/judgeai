@@ -336,6 +336,16 @@ export async function updateAIConfig(updates) {
   }
 }
 
+export async function resetAIConfig() {
+  try {
+    await redis.del(KEYS.aiConfig);
+    return { ...DEFAULT_AI_CONFIG };
+  } catch (error) {
+    console.error('resetAIConfig error:', error);
+    return null;
+  }
+}
+
 // Session management
 export async function createSession(userId, token) {
   try {
