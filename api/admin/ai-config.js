@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      const config = getAIConfig();
+      const config = await getAIConfig();
       return res.status(200).json({ config });
     }
 
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
         }
       }
 
-      const config = updateAIConfig(updates);
+      const config = await updateAIConfig(updates);
       return res.status(200).json({
         message: 'AI configuration updated',
         config
