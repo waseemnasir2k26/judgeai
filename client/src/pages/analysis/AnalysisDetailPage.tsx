@@ -23,7 +23,7 @@ import {
 import toast from 'react-hot-toast';
 
 export const AnalysisDetailPage: React.FC = () => {
-  const { analysisId } = useParams<{ analysisId: string }>();
+  const { id: analysisId } = useParams<{ id: string }>();
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('summary');
