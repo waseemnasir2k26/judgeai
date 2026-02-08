@@ -59,7 +59,8 @@ export const AnalysisDetailPage: React.FC = () => {
       // If not in cache, try API
       const response = await analysisApi.get(analysisId!);
       // Handle various response formats
-      const analysisData = response.data?.data?.analysis || response.data?.data || response.data?.analysis || response.data;
+      const resData = response.data as any;
+      const analysisData = resData?.data?.analysis || resData?.data || resData?.analysis || resData;
 
       if (analysisData) {
         setAnalysis(analysisData);
@@ -70,8 +71,9 @@ export const AnalysisDetailPage: React.FC = () => {
       // Check for existing feedback
       try {
         const feedbackRes = await feedbackApi.get(analysisId!);
-        if (feedbackRes.data?.data?.feedback || feedbackRes.data?.feedback) {
-          setExistingFeedback(feedbackRes.data?.data?.feedback || feedbackRes.data?.feedback);
+        const fbData = feedbackRes.data as any;
+        if (fbData?.data?.feedback || fbData?.feedback) {
+          setExistingFeedback(fbData?.data?.feedback || fbData?.feedback);
         }
       } catch {}
     } catch (error) {
@@ -98,7 +100,8 @@ export const AnalysisDetailPage: React.FC = () => {
     const interval = setInterval(async () => {
       try {
         const response = await analysisApi.get(analysisId!);
-        const analysisData = response.data?.data?.analysis || response.data?.data || response.data?.analysis || response.data;
+        const resData = response.data as any;
+        const analysisData = resData?.data?.analysis || resData?.data || resData?.analysis || resData;
 
         if (analysisData) {
           setAnalysis(analysisData);

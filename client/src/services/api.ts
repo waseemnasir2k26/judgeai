@@ -76,15 +76,15 @@ export const authApi = {
 
   // Simplified for testing - skip email verification
   verifyEmail: (email: string, code: string) =>
-    Promise.resolve({ data: { success: true } }),
+    Promise.resolve({ data: { success: true, message: 'Email verified successfully' } }),
 
   resendVerification: (email: string) =>
-    Promise.resolve({ data: { success: true } }),
+    Promise.resolve({ data: { success: true, message: 'Verification email sent' } }),
 
   login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
 
-  logout: () => {
+  logout: (refreshToken?: string) => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     return Promise.resolve({ data: { success: true } });
@@ -120,7 +120,9 @@ export const analysisApi = {
   get: (analysisId: string) =>
     api.get(`/analysis/${analysisId}`).then(res => ({
       data: {
-        data: res.data
+        data: {
+          analysis: res.data.analysis || res.data
+        }
       }
     })),
 
@@ -173,7 +175,7 @@ export const feedbackApi = {
   }) => Promise.resolve({ data: { success: true } }),
 
   get: (analysisId: string) =>
-    Promise.resolve({ data: { feedback: null } }),
+    Promise.resolve({ data: { data: { feedback: null } } }),
 
   getUserFeedback: (params?: { page?: number; limit?: number }) =>
     Promise.resolve({ data: { feedbacks: [], total: 0 } }),
@@ -183,10 +185,17 @@ export const feedbackApi = {
 export const adminApi = {
   getDashboard: () => api.get('/admin/users').then(res => ({
     data: {
-      stats: {
-        totalUsers: res.data.total || 0,
-        totalAnalyses: 0,
-        pendingApprovals: (res.data.users || []).filter((u: any) => u.accountState === 'pending').length,
+      data: {
+        stats: {
+          totalUsers: res.data.total || 0,
+          totalAnalyses: 0,
+          pendingApprovals: (res.data.users || []).filter((u: any) => u.accountState === 'pending').length,
+          approvedUsers: (res.data.users || []).filter((u: any) => u.accountState === 'approved').length,
+          completedAnalyses: 0,
+          averageRating: 0,
+        },
+        recentUsers: res.data.users || [],
+        recentAnalyses: [],
       }
     }
   })),
@@ -197,6 +206,7 @@ export const adminApi = {
     accountState?: string;
     role?: string;
     search?: string;
+    sortOrder?: string;
   }) => api.get('/admin/users', { params }).then(res => ({
     data: {
       data: {
@@ -270,7 +280,26 @@ export const adminApi = {
   getFeedback: (params?: {
     page?: number;
     limit?: number;
-  }) => Promise.resolve({ data: { data: { feedbacks: [], pagination: { pages: 0 } } } }),
+  }) => Promise.resolve({ data: { data: { feedback: [], pagination: { pages: 0 } } } }),
+
+  getFeedbackStats: () => Promise.resolve({
+    data: {
+      data: {
+        stats: {
+          totalFeedback: 0,
+          averageRating: 0,
+          averageNps: 0,
+          categoryAverages: {
+            accuracy: 0,
+            speed: 0,
+            usability: 0,
+            quality: 0,
+          },
+          recommendationRate: 0,
+        }
+      }
+    }
+  }),
 
   respondToFeedback: (feedbackId: string, response: string) =>
     Promise.resolve({ data: { success: true } }),

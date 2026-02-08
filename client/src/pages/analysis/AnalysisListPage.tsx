@@ -197,7 +197,7 @@ export const AnalysisListPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={(e) => handleDelete(analysisId, e)}
+                      onClick={(e) => analysisId && handleDelete(analysisId, e)}
                       className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="w-5 h-5" />
