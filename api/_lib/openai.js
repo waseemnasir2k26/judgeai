@@ -18,6 +18,19 @@ export async function analyzeDocuments(documents, config = {}) {
   const client = getClient();
   const aiConfig = await getAIConfig();
 
+  // Cap maxTokens based on model limits to prevent API errors
+  // gpt-4o: 16384, gpt-4-turbo: 4096, gpt-4: 8192, gpt-3.5-turbo: 4096
+  const modelTokenLimits = {
+    'gpt-4o': 16384,
+    'gpt-4o-mini': 16384,
+    'gpt-4-turbo': 4096,
+    'gpt-4-turbo-preview': 4096,
+    'gpt-4': 8192,
+    'gpt-3.5-turbo': 4096
+  };
+  const maxAllowed = modelTokenLimits[aiConfig.model] || 4096;
+  const safeMaxTokens = Math.min(aiConfig.maxTokens, maxAllowed);
+
   const tone = config.tone || 'professional';
   const depth = config.depth || 'standard';
 
@@ -84,7 +97,7 @@ Provide your response in the following JSON format:
       { role: 'user', content: userPrompt }
     ],
     temperature: aiConfig.temperature,
-    max_tokens: aiConfig.maxTokens,
+    max_tokens: safeMaxTokens,
     response_format: { type: 'json_object' }
   });
 
