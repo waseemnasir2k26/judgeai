@@ -74,19 +74,23 @@ export const authApi = {
     lastName: string;
   }) => api.post('/auth/register', data),
 
-  // Simplified for testing - skip email verification
   verifyEmail: (email: string, code: string) =>
-    Promise.resolve({ data: { success: true, message: 'Email verified successfully' } }),
+    api.post('/auth/verify-email', { email, code }),
 
   resendVerification: (email: string) =>
-    Promise.resolve({ data: { success: true, message: 'Verification email sent' } }),
+    api.post('/auth/resend-verification', { email }),
 
   login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
 
   logout: (refreshToken?: string) => {
+    const token = refreshToken || localStorage.getItem('refreshToken');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    // Fire and forget - don't block on server response
+    if (token) {
+      api.post('/auth/logout', { refreshToken: token }).catch(() => { });
+    }
     return Promise.resolve({ data: { success: true } });
   },
 
@@ -95,12 +99,11 @@ export const authApi = {
 
   getCurrentUser: () => api.get('/auth/me'),
 
-  // Simplified for testing
   forgotPassword: (email: string) =>
-    Promise.resolve({ data: { success: true, message: 'Password reset not available in demo mode' } }),
+    api.post('/auth/forgot-password', { email }),
 
   resetPassword: (email: string, code: string, newPassword: string) =>
-    Promise.resolve({ data: { success: true } }),
+    api.post('/auth/reset-password', { email, code, newPassword }),
 };
 
 // Analysis API - wraps responses to match expected format
@@ -113,7 +116,7 @@ export const analysisApi = {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         // No Content-Type here - let browser set multipart/form-data with boundary
       },
-      timeout: 120000, // 2 minute timeout for AI processing
+      timeout: 65000, // 65 second timeout (Vercel Hobby plan max is 60s)
     });
   },
 
@@ -246,7 +249,9 @@ export const adminApi = {
       data: {
         config: {
           ...res.data.config,
-          hasApiKey: !!process.env.OPENAI_API_KEY || true // Assume key is set via env
+          // hasApiKey and apiKeySource come from the backend now
+          hasApiKey: res.data.config?.hasApiKey ?? false,
+          apiKeySource: res.data.config?.apiKeySource ?? null
         }
       }
     }
@@ -262,10 +267,11 @@ export const adminApi = {
       professional?: string;
       simple?: string;
     };
+    openaiApiKey?: string;
   }) => api.put('/admin/ai-config', data),
 
   testAIConfig: (data?: { apiKey?: string; model?: string }) =>
-    api.get('/health').then(() => ({ data: { success: true } })),
+    api.post('/admin/ai-config-test', data || {}),
 
   getAuditLogs: (params?: {
     userId?: string;

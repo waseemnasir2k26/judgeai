@@ -1,21 +1,75 @@
 import OpenAI from 'openai';
-import { getAIConfig } from './store.js';
+import { getAIConfig, getOpenAIApiKey } from './store.js';
 
+// Cache for the client - will be invalidated when API key changes
 let openaiClient = null;
+let cachedApiKey = null;
 
-function getClient() {
-  if (!openaiClient) {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is not set');
-    }
-    openaiClient = new OpenAI({ apiKey });
+async function getClient() {
+  // Get API key (checks dashboard first, then env variable)
+  const apiKey = await getOpenAIApiKey();
+
+  if (!apiKey) {
+    throw new Error('OpenAI API key not configured. Please set it in the Admin Dashboard or Vercel environment variables.');
   }
+
+  // Create new client if key changed or not initialized
+  if (!openaiClient || cachedApiKey !== apiKey) {
+    console.log('[OpenAI] Initializing client with', cachedApiKey !== apiKey ? 'new' : 'cached', 'API key');
+    openaiClient = new OpenAI({ apiKey });
+    cachedApiKey = apiKey;
+  }
+
   return openaiClient;
 }
 
+// Test a specific API key without affecting the cached client
+export async function testApiKey(apiKey) {
+  try {
+    console.log('[OpenAI] Testing API key...');
+    const testClient = new OpenAI({ apiKey });
+
+    const response = await testClient.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: 'Hello' }],
+      max_tokens: 5
+    });
+
+    console.log('[OpenAI] API key test successful, model:', response.model);
+    return {
+      success: true,
+      model: response.model,
+      message: 'API key is valid'
+    };
+  } catch (error) {
+    console.error('[OpenAI] API key test failed:', error.message);
+
+    let errorMessage = error.message;
+    if (error.status === 401) {
+      errorMessage = 'Invalid API key. Please check your OpenAI API key.';
+    } else if (error.status === 429) {
+      errorMessage = 'Rate limit exceeded or quota exhausted. Check your OpenAI billing.';
+    } else if (error.status === 403) {
+      errorMessage = 'API key does not have access to this model.';
+    }
+
+    return {
+      success: false,
+      error: errorMessage,
+      status: error.status
+    };
+  }
+}
+
+// Invalidate the cached client (call when API key is updated)
+export function invalidateClient() {
+  console.log('[OpenAI] Invalidating cached client');
+  openaiClient = null;
+  cachedApiKey = null;
+}
+
 export async function analyzeDocuments(documents, config = {}) {
-  const client = getClient();
+  const client = await getClient();
   const aiConfig = await getAIConfig();
 
   // Cap maxTokens based on model limits to prevent API errors
@@ -138,7 +192,7 @@ Provide your response in the following JSON format:
 
 export async function testConnection() {
   try {
-    const client = getClient();
+    const client = await getClient();
     const response = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: 'Hello' }],

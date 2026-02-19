@@ -14,15 +14,22 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
+  Cloud,
+  Database,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+interface ExtendedAIConfig extends AIConfig {
+  apiKeySource?: 'dashboard' | 'environment' | null;
+}
+
 export const AIConfigPage: React.FC = () => {
-  const [config, setConfig] = useState<AIConfig | null>(null);
+  const [config, setConfig] = useState<ExtendedAIConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
+  const [testMessage, setTestMessage] = useState<string>('');
   const [showApiKey, setShowApiKey] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -90,18 +97,22 @@ export const AIConfigPage: React.FC = () => {
   const handleTest = async () => {
     setIsTesting(true);
     setTestResult(null);
+    setTestMessage('');
     try {
-      const data: any = { model: formData.model };
+      const data: any = {};
       if (formData.openaiApiKey) {
         data.apiKey = formData.openaiApiKey;
       }
 
-      await adminApi.testAIConfig(data);
+      const response = await adminApi.testAIConfig(data);
       setTestResult('success');
+      setTestMessage(response.data.message || 'API key is valid');
       toast.success('AI configuration is valid');
-    } catch (error) {
+    } catch (error: any) {
       setTestResult('error');
-      toast.error('AI configuration test failed');
+      const errorMsg = error.response?.data?.error || error.response?.data?.details || 'AI configuration test failed';
+      setTestMessage(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsTesting(false);
     }
@@ -156,21 +167,42 @@ export const AIConfigPage: React.FC = () => {
             </Button>
           </div>
           {config?.hasApiKey && (
-            <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
-              <CheckCircle className="w-4 h-4" />
-              API key is configured
+            <div className="space-y-1">
+              <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
+                <CheckCircle className="w-4 h-4" />
+                API key is configured
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                {config.apiKeySource === 'dashboard' ? (
+                  <>
+                    <Database className="w-3 h-3" />
+                    Source: Dashboard (stored encrypted)
+                  </>
+                ) : config.apiKeySource === 'environment' ? (
+                  <>
+                    <Cloud className="w-3 h-3" />
+                    Source: Vercel Environment Variable
+                  </>
+                ) : null}
+              </p>
+            </div>
+          )}
+          {!config?.hasApiKey && (
+            <p className="text-sm text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              No API key configured. Enter one above or set OPENAI_API_KEY in Vercel.
             </p>
           )}
           {testResult === 'success' && (
             <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
-              Configuration test passed
+              {testMessage || 'Configuration test passed'}
             </p>
           )}
           {testResult === 'error' && (
             <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
               <AlertCircle className="w-4 h-4" />
-              Configuration test failed
+              {testMessage || 'Configuration test failed'}
             </p>
           )}
         </CardContent>

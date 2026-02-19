@@ -2,10 +2,18 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { Redis } from '@upstash/redis';
 
-// Initialize Upstash Redis client
+// Initialize Upstash Redis client with error handling
+const redisUrl = process.env.judgeaistore_KV_REST_API_URL || process.env.KV_REST_API_URL;
+const redisToken = process.env.judgeaistore_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN;
+
+if (!redisUrl || !redisToken) {
+  console.error('WARNING: Upstash Redis credentials not found!');
+  console.error('Set KV_REST_API_URL and KV_REST_API_TOKEN in Vercel environment variables.');
+}
+
 const redis = new Redis({
-  url: process.env.judgeaistore_KV_REST_API_URL || process.env.KV_REST_API_URL,
-  token: process.env.judgeaistore_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN,
+  url: redisUrl || 'https://placeholder.upstash.io',
+  token: redisToken || 'placeholder',
 });
 
 // Key prefixes for organization
@@ -17,7 +25,43 @@ const KEYS = {
   feedback: (id) => `feedback:${id}`,
   session: (token) => `session:${token}`,
   aiConfig: 'config:ai',
+  openaiApiKey: 'config:openai-api-key',
 };
+
+// Simple encryption for API key storage (using AES-256-GCM)
+const ENCRYPTION_KEY = process.env.JWT_SECRET || 'default-encryption-key-change-me';
+
+function encryptApiKey(apiKey) {
+  try {
+    // Use a deterministic but secure approach for serverless
+    const iv = crypto.createHash('sha256').update(ENCRYPTION_KEY + 'iv').digest().slice(0, 16);
+    const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest();
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+    let encrypted = cipher.update(apiKey, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag().toString('hex');
+    return `${encrypted}:${authTag}`;
+  } catch (error) {
+    console.error('encryptApiKey error:', error);
+    return null;
+  }
+}
+
+function decryptApiKey(encryptedData) {
+  try {
+    const [encrypted, authTag] = encryptedData.split(':');
+    const iv = crypto.createHash('sha256').update(ENCRYPTION_KEY + 'iv').digest().slice(0, 16);
+    const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest();
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  } catch (error) {
+    console.error('decryptApiKey error:', error);
+    return null;
+  }
+}
 
 // Default AI Configuration
 // gpt-4o supports up to 16384 output tokens and 128K context
@@ -343,6 +387,92 @@ export async function resetAIConfig() {
   } catch (error) {
     console.error('resetAIConfig error:', error);
     return null;
+  }
+}
+
+// OpenAI API Key Management (stored encrypted, separate from config)
+export async function getOpenAIApiKey() {
+  try {
+    // First check Redis for stored key
+    const encryptedKey = await redis.get(KEYS.openaiApiKey);
+    if (encryptedKey) {
+      const decrypted = decryptApiKey(encryptedKey);
+      if (decrypted) {
+        console.log('[API Key] Using dashboard-configured API key');
+        return decrypted;
+      }
+    }
+
+    // Fallback to environment variable
+    const envKey = process.env.OPENAI_API_KEY;
+    if (envKey) {
+      console.log('[API Key] Using environment variable API key');
+      return envKey;
+    }
+
+    console.log('[API Key] No API key configured');
+    return null;
+  } catch (error) {
+    console.error('getOpenAIApiKey error:', error);
+    // Fallback to env on error
+    return process.env.OPENAI_API_KEY || null;
+  }
+}
+
+export async function setOpenAIApiKey(apiKey) {
+  try {
+    if (!apiKey || typeof apiKey !== 'string' || !apiKey.trim()) {
+      console.error('setOpenAIApiKey: Invalid API key provided');
+      return false;
+    }
+
+    const encrypted = encryptApiKey(apiKey.trim());
+    if (!encrypted) {
+      console.error('setOpenAIApiKey: Encryption failed');
+      return false;
+    }
+
+    await redis.set(KEYS.openaiApiKey, encrypted);
+    console.log('[API Key] Dashboard API key saved successfully');
+    return true;
+  } catch (error) {
+    console.error('setOpenAIApiKey error:', error);
+    return false;
+  }
+}
+
+export async function hasOpenAIApiKey() {
+  try {
+    // Check Redis first
+    const encryptedKey = await redis.get(KEYS.openaiApiKey);
+    if (encryptedKey) {
+      return { hasKey: true, source: 'dashboard' };
+    }
+
+    // Check environment variable
+    if (process.env.OPENAI_API_KEY) {
+      return { hasKey: true, source: 'environment' };
+    }
+
+    return { hasKey: false, source: null };
+  } catch (error) {
+    console.error('hasOpenAIApiKey error:', error);
+    // Check env as fallback
+    if (process.env.OPENAI_API_KEY) {
+      return { hasKey: true, source: 'environment' };
+    }
+    return { hasKey: false, source: null };
+  }
+}
+
+export async function deleteOpenAIApiKey() {
+  try {
+    await redis.del(KEYS.openaiApiKey);
+    console.log('[API Key] Dashboard API key deleted');
+    return true;
+  } catch (error) {
+    console.error('deleteOpenAIApiKey error:', error);
+    return false;
   }
 }
 

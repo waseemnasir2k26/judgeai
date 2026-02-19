@@ -118,6 +118,7 @@ export interface AIConfig {
   };
   isConfigured: boolean;
   hasApiKey?: boolean;
+  apiKeySource?: 'dashboard' | 'environment' | null;
   updatedAt?: string;
 }
 

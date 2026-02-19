@@ -1,7 +1,7 @@
 import { IncomingForm } from 'formidable';
 import fs from 'fs';
 import { getUserFromRequest } from '../_lib/auth.js';
-import { saveAnalysis, generateId, updateUser, findUserById } from '../_lib/store.js';
+import { saveAnalysis, generateId, updateUser, findUserById, hasOpenAIApiKey } from '../_lib/store.js';
 import { extractTextFromPDF } from '../_lib/pdf-parse.js';
 import { analyzeDocuments } from '../_lib/openai.js';
 
@@ -215,11 +215,11 @@ export default async function handler(req, res) {
     });
     console.log('DEBUG: Analysis record created:', analysisId);
 
-    // Check if OpenAI API key is configured
-    const hasApiKey = !!process.env.OPENAI_API_KEY;
-    console.log('DEBUG: OpenAI API key configured:', hasApiKey);
+    // Check if OpenAI API key is configured (checks dashboard first, then env)
+    const apiKeyStatus = await hasOpenAIApiKey();
+    console.log('DEBUG: OpenAI API key status:', apiKeyStatus);
 
-    if (!hasApiKey) {
+    if (!apiKeyStatus.hasKey) {
       await saveAnalysis({
         ...analysis,
         status: 'failed',
@@ -228,10 +228,12 @@ export default async function handler(req, res) {
 
       return res.status(500).json({
         error: 'AI service not configured',
-        details: 'Please ask the administrator to add the OpenAI API key in Vercel environment variables.',
+        details: 'Please ask the administrator to add the OpenAI API key in the Admin Dashboard or Vercel environment variables.',
         analysisId
       });
     }
+
+    console.log('DEBUG: Using API key from:', apiKeyStatus.source);
 
     // Run AI analysis
     try {
