@@ -73,11 +73,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                     setTheme('light');
                     setShowThemeMenu(false);
                   }}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${
-                    theme === 'light'
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${theme === 'light'
                       ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <Sun className="w-4 h-4" />
                   Light
@@ -87,11 +86,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                     setTheme('dark');
                     setShowThemeMenu(false);
                   }}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${
-                    theme === 'dark'
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${theme === 'dark'
                       ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <Moon className="w-4 h-4" />
                   Dark
@@ -101,11 +99,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                     setTheme('system');
                     setShowThemeMenu(false);
                   }}
-                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${
-                    theme === 'system'
+                  className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${theme === 'system'
                       ? 'text-primary-600 bg-primary-50 dark:bg-primary-900/20'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <Monitor className="w-4 h-4" />
                   System
@@ -146,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                   </div>
 
                   <Link
-                    to="/profile"
+                    to="/dashboard"
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >

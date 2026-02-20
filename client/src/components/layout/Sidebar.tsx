@@ -5,8 +5,6 @@ import {
   LayoutDashboard,
   FileText,
   PlusCircle,
-  History,
-  MessageSquare,
   X,
 } from 'lucide-react';
 
@@ -34,16 +32,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       path: '/analysis',
       icon: FileText,
       label: 'My Analyses',
-    },
-    {
-      path: '/history',
-      icon: History,
-      label: 'History',
-    },
-    {
-      path: '/feedback',
-      icon: MessageSquare,
-      label: 'My Feedback',
     },
   ];
 

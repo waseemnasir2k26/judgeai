@@ -34,24 +34,16 @@ export default async function handler(req, res) {
       user = await findUserByEmail(decoded.email);
     }
 
-    // If still not found, the user doesn't exist in this instance
-    // For serverless, we can create a minimal user object from token
-    if (!user && decoded.email) {
-      // This handles the serverless case where user was created in another instance
-      user = {
-        id: decoded.userId,
-        email: decoded.email,
-        role: 'user',
-        firstName: 'User',
-        lastName: '',
-        accountState: 'approved',
-        isEmailVerified: true,
-        stats: { totalAnalyses: 0, documentsProcessed: 0 }
-      };
+    if (!user) {
+      return res.status(401).json({ error: 'User not found. Please login again.' });
     }
 
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+    // Check if user account is still valid
+    if (user.accountState !== 'approved') {
+      return res.status(403).json({
+        error: 'Account not approved',
+        accountState: user.accountState
+      });
     }
 
     // Generate new tokens

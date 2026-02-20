@@ -1,8 +1,13 @@
 import jwt from 'jsonwebtoken';
 import { findUserById, findUserByEmail } from './store.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-key-change-in-production';
+// SECURITY: Use environment variables, fallback only for local dev
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'dev-secret-key-change-in-production-min-32-chars');
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || (process.env.NODE_ENV === 'production' ? null : 'dev-refresh-secret-key-change-in-production');
+
+if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
+  console.error('FATAL: JWT_SECRET or JWT_REFRESH_SECRET not set in production!');
+}
 
 // Generate access token (short-lived) - include ALL user info for serverless
 export function generateAccessToken(user) {
