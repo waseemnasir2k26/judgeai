@@ -7,13 +7,19 @@ const redisUrl = process.env.judgeaistore_KV_REST_API_URL || process.env.KV_REST
 const redisToken = process.env.judgeaistore_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN;
 
 if (!redisUrl || !redisToken) {
-  console.error('WARNING: Upstash Redis credentials not found!');
+  console.error('FATAL: Upstash Redis credentials not found!');
   console.error('Set KV_REST_API_URL and KV_REST_API_TOKEN in Vercel environment variables.');
+  console.error('The application will not function without proper Redis configuration.');
+}
+
+// Fail fast if Redis credentials are missing - don't use placeholders
+if (!redisUrl || !redisToken) {
+  throw new Error('FATAL: Redis credentials (KV_REST_API_URL and KV_REST_API_TOKEN) are required. Please configure them in Vercel environment variables.');
 }
 
 const redis = new Redis({
-  url: redisUrl || 'https://placeholder.upstash.io',
-  token: redisToken || 'placeholder',
+  url: redisUrl,
+  token: redisToken,
 });
 
 // Key prefixes for organization
@@ -518,8 +524,24 @@ let superadminSeeded = false;
 export async function ensureSuperadmin() {
   if (superadminSeeded) return;
 
-  const SUPERADMIN_EMAIL = process.env.SUPERADMIN_EMAIL || 'admin@gmail.com';
-  const SUPERADMIN_PASS = process.env.SUPERADMIN_PASSWORD || 'Admin@123456';
+  // SECURITY: Require explicit environment variables - no default credentials
+  const SUPERADMIN_EMAIL = process.env.SUPERADMIN_EMAIL;
+  const SUPERADMIN_PASS = process.env.SUPERADMIN_PASSWORD;
+
+  // Skip superadmin creation if credentials not configured
+  if (!SUPERADMIN_EMAIL || !SUPERADMIN_PASS) {
+    console.warn('SECURITY WARNING: SUPERADMIN_EMAIL and SUPERADMIN_PASSWORD not set.');
+    console.warn('No superadmin account will be created. Set these environment variables in Vercel.');
+    superadminSeeded = true;
+    return;
+  }
+
+  // Validate password strength
+  if (SUPERADMIN_PASS.length < 12) {
+    console.error('SECURITY ERROR: SUPERADMIN_PASSWORD must be at least 12 characters.');
+    superadminSeeded = true;
+    return;
+  }
 
   try {
     const existing = await findUserByEmail(SUPERADMIN_EMAIL);
