@@ -6,7 +6,7 @@
   "framework": "vite",
   "functions": {
     "api/analysis/create.js": {
-      "memory": 3008,
+      "memory": 2048,
       "maxDuration": 60
     },
     "api/**/*.js": {
