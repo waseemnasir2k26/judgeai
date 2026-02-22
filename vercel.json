@@ -16,8 +16,8 @@
   },
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "source": "/api/auth/:action",
+      "destination": "/api/auth?action=:action"
     },
     {
       "source": "/(.*)",

@@ -25,12 +25,8 @@ function setCors(res) {
 
 // Route handlers
 const handlers = {
-  // POST /auth/login
+  // POST /auth?action=login
   async login(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     await ensureSuperadmin();
     const { email, password } = req.body;
 
@@ -102,12 +98,8 @@ const handlers = {
     });
   },
 
-  // POST /auth/register
+  // POST /auth?action=register
   async register(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { firstName, lastName, email, password } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
@@ -136,43 +128,29 @@ const handlers = {
     });
   },
 
-  // GET /auth/me
+  // GET /auth?action=me
   async me(req, res) {
-    if (req.method !== 'GET') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const user = getUserFromRequest(req);
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-
     return res.status(200).json({ user: sanitizeUser(user) });
   },
 
-  // POST /auth/logout
+  // POST /auth?action=logout
   async logout(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const user = getUserFromRequest(req);
     if (user) {
       console.log(`User logged out: ${user.email}`);
     }
-
     return res.status(200).json({
       success: true,
       message: 'Logged out successfully'
     });
   },
 
-  // POST /auth/refresh
+  // POST /auth?action=refresh
   async refresh(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { refreshToken } = req.body;
     if (!refreshToken) {
       return res.status(400).json({ error: 'Refresh token required' });
@@ -209,12 +187,8 @@ const handlers = {
     });
   },
 
-  // POST /auth/forgot-password
+  // POST /auth?action=forgot-password
   async 'forgot-password'(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { email } = req.body;
     if (!email) {
       return res.status(400).json({ error: 'Email is required' });
@@ -231,12 +205,8 @@ const handlers = {
     });
   },
 
-  // POST /auth/reset-password
+  // POST /auth?action=reset-password
   async 'reset-password'(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { email, code, newPassword } = req.body;
 
     if (!email || !code || !newPassword) {
@@ -265,12 +235,8 @@ const handlers = {
     });
   },
 
-  // POST /auth/verify-email
+  // POST /auth?action=verify-email
   async 'verify-email'(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { email, code } = req.body;
 
     if (!email || !code) {
@@ -301,12 +267,8 @@ const handlers = {
     });
   },
 
-  // POST /auth/resend-verification
+  // POST /auth?action=resend-verification
   async 'resend-verification'(req, res) {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const { email } = req.body;
 
     if (!email) {
@@ -344,22 +306,26 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get action from catch-all route
-    // URL: /auth/login → action = ['login']
-    // URL: /auth/forgot-password → action = ['forgot-password']
+    // Get action from query parameter
     const { action } = req.query;
-    const actionName = Array.isArray(action) ? action.join('-') : action;
 
-    console.log(`[Auth] ${req.method} /auth/${actionName}`);
+    console.log(`[Auth] ${req.method} /auth?action=${action}`);
 
-    const routeHandler = handlers[actionName];
+    if (!action) {
+      return res.status(400).json({
+        error: 'Action required',
+        usage: 'Use ?action=login|register|me|logout|refresh|forgot-password|reset-password|verify-email|resend-verification'
+      });
+    }
+
+    const routeHandler = handlers[action];
     if (!routeHandler) {
-      return res.status(404).json({ error: `Unknown auth action: ${actionName}` });
+      return res.status(404).json({ error: `Unknown auth action: ${action}` });
     }
 
     return await routeHandler(req, res);
   } catch (error) {
     console.error('[Auth] Error:', error);
-    return res.status(500).json({ error: 'Authentication operation failed' });
+    return res.status(500).json({ error: 'Authentication operation failed', details: error.message });
   }
 }
