@@ -52,14 +52,14 @@ export const NewAnalysisPage: React.FC = () => {
     accept: {
       'application/pdf': ['.pdf'],
     },
-    maxSize: 4.5 * 1024 * 1024, // 4.5MB per file (Vercel serverless limit)
+    maxSize: 4.5 * 1024 * 1024, // 4.5MB per file (Vercel Hobby plan limit)
     maxFiles: 10,
     onDropRejected: (rejectedFiles) => {
       const file = rejectedFiles[0];
       if (file?.errors?.[0]?.code === 'file-too-large') {
         const sizeMB = (file.file.size / 1024 / 1024).toFixed(1);
-        setError(`File "${file.file.name}" is ${sizeMB}MB. Maximum allowed is 4.5MB per file.`);
-        toast.error(`File too large: ${sizeMB}MB (max 4.5MB)`);
+        setError(`File "${file.file.name}" is ${sizeMB}MB. Maximum allowed is 4.5MB per file (Vercel Hobby plan limit). Please compress your PDF using ilovepdf.com/compress_pdf`);
+        toast.error(`File too large: ${sizeMB}MB. Compress at ilovepdf.com`);
       }
     },
   });
@@ -172,7 +172,7 @@ export const NewAnalysisPage: React.FC = () => {
       const data = err.response?.data;
 
       if (status === 413) {
-        errorMessage = 'File too large. Please use a smaller PDF (max 4.5MB per file). Try compressing your PDF.';
+        errorMessage = 'File too large (Vercel Hobby plan limit: 4.5MB). Compress your PDF at ilovepdf.com/compress_pdf';
       } else if (typeof data === 'string') {
         errorMessage = data;
       } else if (data?.details) {
@@ -281,7 +281,10 @@ export const NewAnalysisPage: React.FC = () => {
                 or click to browse
               </p>
               <p className="text-sm text-gray-400">
-                Maximum 10 files, 4.5MB each
+                Maximum 10 files, 4.5MB each (Vercel limit)
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Large PDFs? Compress at <a href="https://www.ilovepdf.com/compress_pdf" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">ilovepdf.com</a>
               </p>
             </div>
 
