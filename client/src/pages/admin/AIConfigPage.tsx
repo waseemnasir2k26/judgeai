@@ -34,8 +34,8 @@ export const AIConfigPage: React.FC = () => {
 
   const [formData, setFormData] = useState({
     openaiApiKey: '',
-    model: 'gpt-4-turbo-preview',
-    temperature: 0.7,
+    model: 'gpt-4o',
+    temperature: 0.3,
     maxTokens: 4096,
     masterSystemPrompt: '',
     tonePrompts: {
@@ -226,11 +226,11 @@ export const AIConfigPage: React.FC = () => {
               }
               className="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             >
-              <option value="gpt-4-turbo-preview">GPT-4 Turbo Preview</option>
+              <option value="gpt-4o">GPT-4o (Recommended)</option>
+              <option value="gpt-4o-mini">GPT-4o Mini (Faster)</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
               <option value="gpt-4">GPT-4</option>
-              <option value="gpt-4-32k">GPT-4 32k</option>
               <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-              <option value="gpt-3.5-turbo-16k">GPT-3.5 Turbo 16k</option>
             </select>
           </div>
 
@@ -266,12 +266,15 @@ export const AIConfigPage: React.FC = () => {
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  maxTokens: parseInt(e.target.value) || 4096,
+                  maxTokens: Math.min(parseInt(e.target.value) || 4096, 4096),
                 }))
               }
               min={100}
-              max={128000}
+              max={4096}
             />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Maximum output tokens (capped at 4096 for API compatibility)
+            </p>
           </div>
         </CardContent>
       </Card>

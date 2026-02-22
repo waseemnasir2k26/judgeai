@@ -271,7 +271,7 @@ export const adminApi = {
   }) => api.put('/admin/ai-config', data),
 
   testAIConfig: (data?: { apiKey?: string; model?: string }) =>
-    api.post('/admin/ai-config-test', data || {}),
+    api.post('/admin/ai-config', data || {}),
 
   getAuditLogs: (params?: {
     userId?: string;
