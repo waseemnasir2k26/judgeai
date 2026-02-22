@@ -73,13 +73,14 @@ export async function analyzeDocuments(documents, config = {}) {
   const aiConfig = await getAIConfig();
 
   // Cap maxTokens based on model limits to prevent API errors
-  // gpt-4o: 16384, gpt-4-turbo: 4096, gpt-4: 8192, gpt-3.5-turbo: 4096
+  // Note: Some API tiers have lower limits than model maximums
+  // Using conservative limits that work across all tiers
   const modelTokenLimits = {
-    'gpt-4o': 16384,
-    'gpt-4o-mini': 16384,
+    'gpt-4o': 4096,        // Model supports 16384, but some tiers cap at 4096
+    'gpt-4o-mini': 4096,   // Model supports 16384, but some tiers cap at 4096
     'gpt-4-turbo': 4096,
     'gpt-4-turbo-preview': 4096,
-    'gpt-4': 8192,
+    'gpt-4': 4096,         // Model supports 8192, but using safe limit
     'gpt-3.5-turbo': 4096
   };
   const maxAllowed = modelTokenLimits[aiConfig.model] || 4096;
