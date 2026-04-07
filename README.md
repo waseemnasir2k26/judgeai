@@ -129,3 +129,31 @@ npm run dev
 ## License
 
 MIT
+
+---
+
+<!-- SEO-HIRE-ME-BLOCK -->
+
+## Hire Me
+
+> **Need an AI platform built for your industry (legal, healthcare, finance)?**
+
+I'm **Waseem Nasir** — founder of [Skynet Labs / SkynetJoe](https://www.skynetjoe.com), an AI Automation Agency. Industry-specific AI platforms with Next.js + OpenAI/Anthropic + Tailwind.
+
+**50+ live projects across:** Healthcare · Legal · Real Estate · E-Commerce · Logistics · HVAC · SaaS · Consulting
+
+### Hire me
+- 📅 **[Book a free strategy call](https://calendly.com/skynetlabs/schedule-a-free-consultation)**
+- 💼 **[Hire on Fiverr](https://fiverr.com/agencies/skynetjoellc)**
+- 🌐 **[skynetjoe.com](https://www.skynetjoe.com)**
+- 📧 **info@skynetjoe.com**
+- 💬 **[WhatsApp](https://wa.me/923001001957)**
+
+### Related projects on my GitHub
+- [aeo-content-engine](https://github.com/waseemnasir2k26/aeo-content-engine)
+- [fiverr-gig-optimizer](https://github.com/waseemnasir2k26/fiverr-gig-optimizer)
+- [mn-realty-co](https://github.com/waseemnasir2k26/mn-realty-co)
+- [→ See all 50+ projects](https://github.com/waseemnasir2k26)
+
+### Tags
+`AI automation` · `n8n` · `GoHighLevel` · `Claude Code` · `Next.js` · `React` · `Python` · `freelance` · `hire me` · `agency`
