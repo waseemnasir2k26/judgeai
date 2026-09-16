@@ -2,6 +2,10 @@
 
 A production-ready legal AI platform that enables judges and legal professionals to upload case documents, receive AI-powered analysis, and generate comprehensive judgment reports.
 
+## Status
+
+Last reviewed: September 2026 · release v2026.09
+
 ## Features
 
 - **Document Analysis**: Upload PDF case documents for AI-powered analysis
