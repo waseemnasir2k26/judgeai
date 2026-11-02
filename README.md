@@ -147,11 +147,11 @@ I'm **Waseem Nasir** — founder of [Skynet Labs / SkynetJoe](https://www.skynet
 **50+ live projects across:** Healthcare · Legal · Real Estate · E-Commerce · Logistics · HVAC · SaaS · Consulting
 
 ### Hire me
-- 📅 **[Book a free strategy call](https://calendly.com/skynetlabs/schedule-a-free-consultation)**
+- 📅 **[Message me on WhatsApp](https://wa.me/6281316077185)**
 - 💼 **[Hire on Fiverr](https://www.fiverr.com/agencies/skynetjoellc)**
 - 💼 **[Hire on Upwork](https://www.upwork.com/freelancers/muhammadwaseemnasir)**
 - 🌐 **[skynetjoe.com](https://www.skynetjoe.com)**
-- 📧 **info@skynetjoe.com**
+- 📧 **waseem@skynetjoe.com**
 - 💬 **[WhatsApp](https://wa.me/923001001957)**
 
 ### Related projects on my GitHub
